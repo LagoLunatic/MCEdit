@@ -49,6 +49,8 @@ class MCEditorWindow(QMainWindow):
     self.ui.area_index.activated.connect(self.area_index_changed)
     self.ui.room_index.activated.connect(self.room_index_changed)
     
+    self.ui.entity_lists_list.itemChanged.connect(self.entity_list_visibility_toggled)
+    
     #self.setWindowTitle("Minish Cap Editor %s" % VERSION)
     
     #icon_path = os.path.join(ASSETS_PATH, "icon.ico")
@@ -143,6 +145,7 @@ class MCEditorWindow(QMainWindow):
   
   def load_room(self):
     self.room_graphics_scene.clear()
+    self.ui.entity_lists_list.clear()
     
     self.update_selected_room_on_map()
     
@@ -178,16 +181,20 @@ class MCEditorWindow(QMainWindow):
     
     self.entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.entities_view_item)
-    for entity_list in self.room.entity_lists:
-      for entity in entity_list:
+    self.entity_list_view_items = []
+    for i, entity_list in enumerate(self.room.entity_lists):
+      list_widget_item = QListWidgetItem("%02X %08X %s" % (i, entity_list.entity_list_ptr, entity_list.name))
+      list_widget_item.setFlags(list_widget_item.flags() | Qt.ItemIsUserCheckable)
+      list_widget_item.setCheckState(Qt.Checked)
+      self.ui.entity_lists_list.addItem(list_widget_item)
+      
+      entity_list_view_item = QGraphicsRectItem()
+      entity_list_view_item.setParentItem(self.entities_view_item)
+      self.entity_list_view_items.append(entity_list_view_item)
+      
+      for entity in entity_list.entities:
         entity_item = EntityRectItem(entity, "entity")
-        entity_item.setParentItem(self.entities_view_item)
-    
-    # TODO: need a list of each separate entity list, with checkboxes to hide each individual one
-    # Entities (1)
-    # Entities (2)
-    # Enemies
-    # Conditional Entites (1+)
+        entity_item.setParentItem(entity_list_view_item)
     
     self.tile_entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.tile_entities_view_item)
@@ -326,6 +333,10 @@ class MCEditorWindow(QMainWindow):
     self.entities_view_item.setVisible(self.ui.actionEntities.isChecked())
     self.tile_entities_view_item.setVisible(self.ui.actionTile_Entities.isChecked())
     self.exits_view_item.setVisible(self.ui.actionExits.isChecked())
+  
+  def entity_list_visibility_toggled(self, list_widget_item):
+    entity_list_index = int(list_widget_item.text().split(" ")[0], 16)
+    self.entity_list_view_items[entity_list_index].setVisible(list_widget_item.checkState() == Qt.Checked)
   
   def select_entity(self, entity_graphics_item):
     layout = self.ui.entity_properies.layout()

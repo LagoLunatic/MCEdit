@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Wed Mar  6 11:54:43 2019
+# Created: Tue Mar 12 12:02:14 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -39,6 +39,10 @@ class Ui_MainWindow(object):
         self.map_graphics_view.setMaximumSize(QtCore.QSize(256, 1024))
         self.map_graphics_view.setObjectName("map_graphics_view")
         self.verticalLayout_2.addWidget(self.map_graphics_view)
+        self.entity_lists_list = QtWidgets.QListWidget(self.centralwidget)
+        self.entity_lists_list.setMaximumSize(QtCore.QSize(256, 16777215))
+        self.entity_lists_list.setObjectName("entity_lists_list")
+        self.verticalLayout_2.addWidget(self.entity_lists_list)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
