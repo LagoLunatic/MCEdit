@@ -193,8 +193,21 @@ class MCEditorWindow(QMainWindow):
       self.entity_list_view_items.append(entity_list_view_item)
       
       for entity in entity_list.entities:
-        entity_item = EntityRectItem(entity, "entity")
-        entity_item.setParentItem(entity_list_view_item)
+        try:
+          if entity.type in [3, 4, 6, 7]:
+            image = self.renderer.render_entity_sprite(entity)
+            entity_item = EntityImageItem(image, entity, "entity")
+            entity_item.setParentItem(entity_list_view_item)
+          else:
+            entity_item = EntityRectItem(entity, "entity")
+            entity_item.setParentItem(entity_list_view_item)
+        except Exception as e:
+          stack_trace = traceback.format_exc()
+          error_message = "Error rendering entity sprite:\n" + str(e) + "\n\n" + stack_trace
+          print(error_message)
+          
+          entity_item = EntityRectItem(entity, "entity")
+          entity_item.setParentItem(entity_list_view_item)
     
     self.tile_entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.tile_entities_view_item)
@@ -237,7 +250,7 @@ class MCEditorWindow(QMainWindow):
     if graphics_item is None:
       return
     
-    if isinstance(graphics_item, EntityRectItem):
+    if isinstance(graphics_item, EntityRectItem) or isinstance(graphics_item, EntityImageItem):
       if button == Qt.LeftButton:
         self.select_entity(graphics_item)
       elif button == Qt.RightButton and graphics_item.entity_class == "exit":
