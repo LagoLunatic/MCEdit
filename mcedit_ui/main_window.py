@@ -6,6 +6,7 @@ from PySide2.QtWidgets import *
 from mcedit_ui.ui_main import Ui_MainWindow
 from mcedit_ui.clickable_graphics_scene import *
 from mcedit_ui.custom_graphics_items import *
+from mcedit_ui.entity_layer_item import *
 
 from mclib.game import Game
 from mclib.renderer import Renderer
@@ -188,26 +189,9 @@ class MCEditorWindow(QMainWindow):
       list_widget_item.setCheckState(Qt.Checked)
       self.ui.entity_lists_list.addItem(list_widget_item)
       
-      entity_list_view_item = QGraphicsRectItem()
+      entity_list_view_item = EntityLayerItem(entity_list, self.renderer)
       entity_list_view_item.setParentItem(self.entities_view_item)
       self.entity_list_view_items.append(entity_list_view_item)
-      
-      for entity in entity_list.entities:
-        try:
-          if entity.type in [3, 4, 6, 7]:
-            image = self.renderer.render_entity_sprite(entity)
-            entity_item = EntityImageItem(image, entity, "entity")
-            entity_item.setParentItem(entity_list_view_item)
-          else:
-            entity_item = EntityRectItem(entity, "entity")
-            entity_item.setParentItem(entity_list_view_item)
-        except Exception as e:
-          stack_trace = traceback.format_exc()
-          error_message = "Error rendering entity sprite:\n" + str(e) + "\n\n" + stack_trace
-          print(error_message)
-          
-          entity_item = EntityRectItem(entity, "entity")
-          entity_item.setParentItem(entity_list_view_item)
     
     self.tile_entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.tile_entities_view_item)
