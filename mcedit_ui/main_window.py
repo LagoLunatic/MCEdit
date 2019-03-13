@@ -102,7 +102,7 @@ class MCEditorWindow(QMainWindow):
       self.ui.area_index.addItem("%02X %s" % (area.area_index, area_name))
     self.area_index_changed(0)
   
-  def area_index_changed(self, area_index):
+  def area_index_changed(self, area_index, skip_loading_room=False):
     self.area_index = area_index
     self.ui.area_index.setCurrentIndex(area_index)
     self.ui.room_index.clear()
@@ -124,7 +124,8 @@ class MCEditorWindow(QMainWindow):
       print(error_message)
       return
     
-    self.room_index_changed(0)
+    if not skip_loading_room:
+      self.room_index_changed(0)
   
   def room_index_changed(self, room_index):
     self.room_index = room_index
@@ -139,7 +140,7 @@ class MCEditorWindow(QMainWindow):
   
   def change_area_and_room(self, area_index, room_index):
     if self.area_index != area_index:
-      self.area_index_changed(area_index)
+      self.area_index_changed(area_index, skip_loading_room=True)
     
     self.room_index_changed(room_index)
   
@@ -177,7 +178,6 @@ class MCEditorWindow(QMainWindow):
       stack_trace = traceback.format_exc()
       error_message = "Error rendering room:\n" + str(e) + "\n\n" + stack_trace
       print(error_message)
-      return
     
     self.entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.entities_view_item)
