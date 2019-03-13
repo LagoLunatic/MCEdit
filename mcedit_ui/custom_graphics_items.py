@@ -13,6 +13,40 @@ class GraphicsImageItem(QGraphicsPixmapItem):
     super().__init__(pixmap)
     
     self.setOffset(-width//2, -height//2)
+  
+  def boundingRect(self):
+    # If the sprite is smaller than 16x16, make sure the bounding rectangle is at least 16x16.
+    
+    orig_rect = super().boundingRect()
+    top = orig_rect.top()
+    bottom = orig_rect.bottom()
+    left = orig_rect.left()
+    right = orig_rect.right()
+    
+    if top > -8:
+      top = -8
+    if bottom < 8:
+      bottom = 8
+    if left > -8:
+      left = -8
+    if right < 8:
+      right = 8
+    
+    return QRectF(left, top, right-left, bottom-top)
+  
+  def shape(self):
+    # Make the whole bounding rectangle clickable, instead of just the sprite's pixels.
+    path = QPainterPath()
+    path.addRect(self.boundingRect())
+    return path
+  
+  def paint(self, painter, option, widget):
+    # Draw a border around the sprite.
+    pen = painter.pen()
+    rect = self.boundingRect()
+    painter.drawRect(QRect(rect.x(), rect.y(), rect.width()-pen.width(), rect.height()-pen.width()))
+    
+    super().paint(painter, option, widget)
 
 class EntityImageItem(GraphicsImageItem):
   def __init__(self, image, entity, entity_class):
@@ -23,6 +57,7 @@ class EntityImageItem(GraphicsImageItem):
     
     self.setFlag(QGraphicsItem.ItemIsMovable)
     #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+    self.setFlag(QGraphicsItem.ItemIsSelectable)
     
     self.setCursor(QCursor(Qt.SizeAllCursor))
     
