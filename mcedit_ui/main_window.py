@@ -154,6 +154,15 @@ class MCEditorWindow(QMainWindow):
     if self.room is None:
       return
     
+    self.load_room_layers()
+    
+    self.load_room_entities()
+    
+    self.room_graphics_scene.setSceneRect(self.room_graphics_scene.itemsBoundingRect())
+    
+    self.update_visible_view_items()
+  
+  def load_room_layers(self):
     self.layer_bg2_view_item = QGraphicsPixmapItem()
     self.room_graphics_scene.addItem(self.layer_bg2_view_item)
     self.layer_bg1_view_item = QGraphicsPixmapItem()
@@ -179,7 +188,8 @@ class MCEditorWindow(QMainWindow):
       stack_trace = traceback.format_exc()
       error_message = "Error rendering room:\n" + str(e) + "\n\n" + stack_trace
       print(error_message)
-    
+  
+  def load_room_entities(self):
     self.entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.entities_view_item)
     self.entity_list_view_items = []
@@ -204,10 +214,6 @@ class MCEditorWindow(QMainWindow):
     for ext in self.room.exits:
       entity_item = EntityRectItem(ext, "exit")
       entity_item.setParentItem(self.exits_view_item)
-    
-    self.room_graphics_scene.setSceneRect(self.room_graphics_scene.itemsBoundingRect())
-    
-    self.update_visible_view_items()
     
     self.select_entity(None)
   
