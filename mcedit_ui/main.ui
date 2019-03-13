@@ -86,7 +86,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>260</width>
+         <width>240</width>
          <height>525</height>
         </rect>
        </property>
@@ -101,17 +101,10 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QLabel" name="entity_label">
-        <property name="text">
-         <string>(No entity selected.)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="entity_properies" native="true">
+       <widget class="EntityProperties" name="entity_properies" native="true">
         <property name="minimumSize">
          <size>
-          <width>260</width>
+          <width>300</width>
           <height>0</height>
          </size>
         </property>
@@ -121,7 +114,6 @@
           <height>16777215</height>
          </size>
         </property>
-        <layout class="QFormLayout" name="formLayout_2"/>
        </widget>
       </item>
       <item>
@@ -231,6 +223,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>EntityProperties</class>
+   <extends>QWidget</extends>
+   <header>mcedit_ui.entity_properties</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

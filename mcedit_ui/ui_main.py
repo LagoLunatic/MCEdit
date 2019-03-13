@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Tue Mar 12 12:02:14 2019
+# Created: Wed Mar 13 18:29:51 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -50,7 +50,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 260, 525))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 240, 525))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -61,16 +61,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.scrollArea)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.entity_label = QtWidgets.QLabel(self.centralwidget)
-        self.entity_label.setObjectName("entity_label")
-        self.verticalLayout_3.addWidget(self.entity_label)
-        self.entity_properies = QtWidgets.QWidget(self.centralwidget)
-        self.entity_properies.setMinimumSize(QtCore.QSize(260, 0))
+        self.entity_properies = EntityProperties(self.centralwidget)
+        self.entity_properies.setMinimumSize(QtCore.QSize(300, 0))
         self.entity_properies.setMaximumSize(QtCore.QSize(260, 16777215))
         self.entity_properies.setObjectName("entity_properies")
-        self.formLayout_2 = QtWidgets.QFormLayout(self.entity_properies)
-        self.formLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.formLayout_2.setObjectName("formLayout_2")
         self.verticalLayout_3.addWidget(self.entity_properies)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem1)
@@ -125,7 +119,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Minish Cap Editor", None, -1))
         self.label.setText(QtWidgets.QApplication.translate("MainWindow", "Area", None, -1))
         self.label_2.setText(QtWidgets.QApplication.translate("MainWindow", "Room", None, -1))
-        self.entity_label.setText(QtWidgets.QApplication.translate("MainWindow", "(No entity selected.)", None, -1))
         self.menuFile.setTitle(QtWidgets.QApplication.translate("MainWindow", "File", None, -1))
         self.menuView.setTitle(QtWidgets.QApplication.translate("MainWindow", "View", None, -1))
         self.actionOpen_ROM.setText(QtWidgets.QApplication.translate("MainWindow", "Open ROM", None, -1))
@@ -135,3 +128,4 @@ class Ui_MainWindow(object):
         self.actionTile_Entities.setText(QtWidgets.QApplication.translate("MainWindow", "Tile Entities", None, -1))
         self.actionExits.setText(QtWidgets.QApplication.translate("MainWindow", "Exits", None, -1))
 
+from mcedit_ui.entity_properties import EntityProperties

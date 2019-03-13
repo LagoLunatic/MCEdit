@@ -220,6 +220,7 @@ class MCEditorWindow(QMainWindow):
   def room_clicked(self, x, y, button):
     graphics_item = self.room_graphics_scene.itemAt(x, y)
     if graphics_item is None:
+      self.select_entity(None)
       return
     
     if isinstance(graphics_item, EntityRectItem) or isinstance(graphics_item, EntityImageItem):
@@ -228,6 +229,8 @@ class MCEditorWindow(QMainWindow):
       elif button == Qt.RightButton and graphics_item.entity_class == "exit":
         # Go through the exit into the destination room.
         self.change_area_and_room(graphics_item.entity.dest_area, graphics_item.entity.dest_room)
+    else:
+      self.select_entity(None)
   
   def load_map(self):
     self.map_graphics_scene.clear()
@@ -325,81 +328,7 @@ class MCEditorWindow(QMainWindow):
     self.entity_list_view_items[entity_list_index].setVisible(list_widget_item.checkState() == Qt.Checked)
   
   def select_entity(self, entity_graphics_item):
-    layout = self.ui.entity_properies.layout()
-    for i in reversed(range(layout.count())): 
-      layout.itemAt(i).widget().setParent(None)
-    
-    if entity_graphics_item is None:
-      self.ui.entity_label.setText("(No entity selected.)")
-      return
-    
-    entity_class = entity_graphics_item.entity_class
-    
-    if entity_class == "entity":
-      self.ui.entity_label.setText("Entity properties:")
-      
-      entity_props = [
-        ("ROM Location", "entity_ptr", 32),
-        
-        ("Type", "type", 4),
-        ("Unknown 1", "unknown_1", 4),
-        ("Unknown 2", "unknown_2", 8),
-        ("Subtype", "subtype", 8),
-        ("Unknown 3", "unknown_3", 8),
-        ("Unknown 4", "unknown_4", 32),
-        ("X Pos", "x_pos", 16),
-        ("Y Pos", "y_pos", 16),
-        ("Params", "params", 32),
-      ]
-    elif entity_class == "tile_entity":
-      self.ui.entity_label.setText("Tile entity properties:")
-      
-      entity_props = [
-        ("ROM Location", "entity_ptr", 32),
-        
-        ("Type", "type", 8),
-        ("Unknown 1", "unknown_1", 8),
-        ("Item ID", "item_id", 8),
-        ("Unknown 2", "unknown_2", 8),
-        ("X Pos", "x_pos", 6),
-        ("Y Pos", "y_pos", 6),
-        ("Message ID", "message_id", 16),
-      ]
-    elif entity_class == "exit":
-      self.ui.entity_label.setText("Exit properties:")
-      
-      entity_props = [
-        ("ROM Location", "exit_ptr", 32),
-        
-        ("Transition Type", "transition_type", 16),
-        ("X Pos", "x_pos", 16),
-        ("Y Pos", "y_pos", 16),
-        ("Destination X", "dest_x", 16),
-        ("Destination Y", "dest_y", 16),
-        ("Unknown 1", "unknown_1", 8),
-        ("Destination Area", "dest_area", 8),
-        ("Destination Room", "dest_room", 8),
-        ("Unknown 2", "unknown_2", 8),
-        ("Unknown 3", "unknown_3", 8),
-        ("Unknown 4", "unknown_4", 16),
-        ("Padding", "padding", 16),
-      ]
-    
-    row_index = 0
-    for pretty_name, property_name, num_bits in entity_props:
-      value = entity_graphics_item.entity.__dict__[property_name]
-      
-      label = QLabel(self.ui.centralwidget)
-      label.setText(pretty_name)
-      layout.setWidget(row_index, QFormLayout.LabelRole, label)
-      
-      line_edit = QLineEdit(self.ui.centralwidget)
-      num_hex_digits = (num_bits+3)//4
-      format_string = "%0" + str(num_hex_digits) + "X"
-      line_edit.setText(format_string % value)
-      layout.setWidget(row_index, QFormLayout.FieldRole, line_edit)
-      
-      row_index += 1
+    self.ui.entity_properies.select_entity(entity_graphics_item)
   
   def keyPressEvent(self, event):
     if event.key() == Qt.Key_Escape:
