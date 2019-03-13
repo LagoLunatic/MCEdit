@@ -83,17 +83,48 @@ class EntityRectItem(QGraphicsRectItem):
     
     self.setCursor(QCursor(Qt.SizeAllCursor))
     
-    if entity_class == "tile_entity":
-      self.setPos(entity.x_pos*16+8, entity.y_pos*16+8)
-    else:
-      self.setPos(entity.x_pos, entity.y_pos)
-    
     if entity_class == "entity":
-      if entity.type == 3:
-        self.setBrush(self.ENEMY_BRUSH)
-      else:
-        self.setBrush(self.ENTITY_BRUSH)
+      self.init_entity()
     elif entity_class == "tile_entity":
-      self.setBrush(self.TILE_ENTITY_BRUSH)
+      self.init_tile_entity()
     elif entity_class == "exit":
-      self.setBrush(self.EXIT_BRUSH)
+      self.init_exit()
+  
+  def init_entity(self):
+    self.setPos(self.entity.x_pos, self.entity.y_pos)
+    
+    if self.entity.type == 3:
+      self.setBrush(self.ENEMY_BRUSH)
+    else:
+      self.setBrush(self.ENTITY_BRUSH)
+  
+  def init_tile_entity(self):
+    self.setPos(self.entity.x_pos*16+8, self.entity.y_pos*16+8)
+    
+    self.setBrush(self.TILE_ENTITY_BRUSH)
+  
+  def init_exit(self):
+    ext = self.entity
+    room = self.entity.room
+    
+    self.setPos(ext.x_pos, ext.y_pos)
+    
+    self.setBrush(self.EXIT_BRUSH)
+    
+    if ext.transition_type == 0:
+      if ext.unknown_1 & 0x03 != 0:
+        # Upwards screen edge transition
+        self.setPos(0, 0 - ((ext.unknown_1 & 0x03) >> 0)*0x10)
+        self.setRect(0, 0, room.width, 16)
+      elif ext.unknown_1 & 0x0C != 0:
+        # Rightwards screen edge transition
+        self.setPos(room.width - 0x10 + ((ext.unknown_1 & 0x0C) >> 2)*0x10, 0)
+        self.setRect(0, 0, 16, room.height)
+      elif ext.unknown_1 & 0x30 != 0:
+        # Downwards screen edge transition
+        self.setPos(0, room.height - 0x10 + ((ext.unknown_1 & 0x30) >> 4)*0x10)
+        self.setRect(0, 0, room.width, 16)
+      elif ext.unknown_1 & 0xC0 != 0:
+        # Leftwards screen edge transition
+        self.setPos(0 - ((ext.unknown_1 & 0xC0) >> 6)*0x10, 0)
+        self.setRect(0, 0, 16, room.height)

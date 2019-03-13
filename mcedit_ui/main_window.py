@@ -204,24 +204,6 @@ class MCEditorWindow(QMainWindow):
     for ext in self.room.exits:
       entity_item = EntityRectItem(ext, "exit")
       entity_item.setParentItem(self.exits_view_item)
-      
-      if ext.transition_type == 0:
-        if ext.unknown_1 & 0x03 != 0:
-          # Upwards screen edge transition
-          entity_item.setPos(0, 0 - ((ext.unknown_1 & 0x03) >> 0)*0x10)
-          entity_item.setRect(0, 0, self.room.width, 16)
-        elif ext.unknown_1 & 0x0C != 0:
-          # Rightwards screen edge transition
-          entity_item.setPos(self.room.width - 0x10 + ((ext.unknown_1 & 0x0C) >> 2)*0x10, 0)
-          entity_item.setRect(0, 0, 16, self.room.height)
-        elif ext.unknown_1 & 0x30 != 0:
-          # Downwards screen edge transition
-          entity_item.setPos(0, self.room.height - 0x10 + ((ext.unknown_1 & 0x30) >> 4)*0x10)
-          entity_item.setRect(0, 0, self.room.width, 16)
-        elif ext.unknown_1 & 0xC0 != 0:
-          # Leftwards screen edge transition
-          entity_item.setPos(0 - ((ext.unknown_1 & 0xC0) >> 6)*0x10, 0)
-          entity_item.setRect(0, 0, 16, self.room.height)
     
     self.room_graphics_scene.setSceneRect(self.room_graphics_scene.itemsBoundingRect())
     
