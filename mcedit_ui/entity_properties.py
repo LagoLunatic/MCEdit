@@ -99,7 +99,7 @@ class CustomItemDelegate(QItemDelegate):
     entity = model.entity
     prop = model.get_property_by_row(index.row())
     
-    if prop.attribute_name in ["type", "subtype"]:
+    if prop.attribute_name in ["type", "subtype", "form"]:
       editor = QComboBox(parent)
       
       value = entity.__dict__[prop.attribute_name]
@@ -116,7 +116,7 @@ class CustomItemDelegate(QItemDelegate):
   
   def setEditorData(self, editor, index):
     prop = index.model().get_property_by_row(index.row())
-    if prop.attribute_name in ["type", "subtype"]:
+    if prop.attribute_name in ["type", "subtype", "form"]:
       editor
     else:
       editor.setText(index.data())
