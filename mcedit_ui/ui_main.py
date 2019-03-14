@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Wed Mar 13 18:29:51 2019
+# Created: Wed Mar 13 20:59:08 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(1280, 768)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -25,22 +25,23 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setObjectName("label")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label)
-        self.area_index = QtWidgets.QComboBox(self.centralwidget)
-        self.area_index.setObjectName("area_index")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.area_index)
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setObjectName("label_2")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_2)
+        self.area_index = QtWidgets.QComboBox(self.centralwidget)
+        self.area_index.setObjectName("area_index")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.area_index)
         self.room_index = QtWidgets.QComboBox(self.centralwidget)
         self.room_index.setObjectName("room_index")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.room_index)
         self.verticalLayout_2.addLayout(self.formLayout)
         self.map_graphics_view = QtWidgets.QGraphicsView(self.centralwidget)
-        self.map_graphics_view.setMaximumSize(QtCore.QSize(256, 1024))
+        self.map_graphics_view.setMaximumSize(QtCore.QSize(300, 1024))
         self.map_graphics_view.setObjectName("map_graphics_view")
         self.verticalLayout_2.addWidget(self.map_graphics_view)
         self.entity_lists_list = QtWidgets.QListWidget(self.centralwidget)
-        self.entity_lists_list.setMaximumSize(QtCore.QSize(256, 16777215))
+        self.entity_lists_list.setMinimumSize(QtCore.QSize(300, 0))
+        self.entity_lists_list.setMaximumSize(QtCore.QSize(300, 16777215))
         self.entity_lists_list.setObjectName("entity_lists_list")
         self.verticalLayout_2.addWidget(self.entity_lists_list)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -50,7 +51,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 240, 525))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 638, 693))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -69,9 +70,12 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem1)
         self.horizontalLayout.addLayout(self.verticalLayout_3)
+        self.horizontalLayout.setStretch(0, 1)
+        self.horizontalLayout.setStretch(1, 4)
+        self.horizontalLayout.setStretch(2, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 26))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
