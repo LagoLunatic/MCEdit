@@ -22,6 +22,16 @@ try:
 except ImportError:
   from yaml import Dumper
 
+# Allow yaml to load and dump OrderedDicts.
+yaml.SafeLoader.add_constructor(
+  yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+  lambda loader, node: OrderedDict(loader.construct_pairs(node))
+)
+yaml.Dumper.add_representer(
+  OrderedDict,
+  lambda dumper, data: dumper.represent_dict(data.items())
+)
+
 class MCEditorWindow(QMainWindow):
   def __init__(self):
     super().__init__()
@@ -341,13 +351,3 @@ class MCEditorWindow(QMainWindow):
     #  return
     
     self.save_settings()
-
-# Allow yaml to load and dump OrderedDicts.
-yaml.SafeLoader.add_constructor(
-  yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-  lambda loader, node: OrderedDict(loader.construct_pairs(node))
-)
-yaml.Dumper.add_representer(
-  OrderedDict,
-  lambda dumper, data: dumper.represent_dict(data.items())
-)
