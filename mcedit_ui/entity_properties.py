@@ -3,6 +3,8 @@ from PySide2.QtGui import *
 from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 
+from mclib.entity_type_docs import EntityTypeDocs
+
 from collections import namedtuple
 
 Property = namedtuple(
@@ -93,17 +95,20 @@ class EntityProperties(QWidget):
 
 class CustomItemDelegate(QItemDelegate):
   def createEditor(self, parent, option, index):
-    prop = index.model().get_property_by_row(index.row())
+    model = index.model()
+    entity = model.entity
+    prop = model.get_property_by_row(index.row())
+    
     if prop.attribute_name in ["type", "subtype"]:
       editor = QComboBox(parent)
       
-      num_possible_values = 2**prop.num_bits
-      num_hex_digits = (prop.num_bits+3)//4
-      format_string = "%0" + str(num_hex_digits) + "X"
-      for i in range(num_possible_values):
-        editor.addItem(format_string % i)
+      value = entity.__dict__[prop.attribute_name]
       
-      value = index.model().entity.__dict__[prop.attribute_name]
+      num_possible_values = 2**prop.num_bits
+      for i in range(num_possible_values):
+        option_name = EntityTypeDocs.prettify_prop_value(prop, i, entity)
+        editor.addItem(option_name)
+      
       editor.setCurrentIndex(value)
     else:
       editor = QLineEdit(parent)
@@ -167,10 +172,7 @@ class EntityModel(QAbstractItemModel):
         return prop.pretty_name
       else:
         value = self.entity.__dict__[prop.attribute_name]
-        
-        num_hex_digits = (prop.num_bits+3)//4
-        format_string = "%0" + str(num_hex_digits) + "X"
-        return format_string % value
+        return EntityTypeDocs.prettify_prop_value(prop, value, self.entity)
     else:
       return None
   
