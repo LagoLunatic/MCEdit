@@ -7,6 +7,8 @@ import traceback
 
 from mcedit_ui.custom_graphics_items import *
 
+from mclib.entity_type_docs import EntityTypeDocs
+
 class EntityLayerItem(QGraphicsRectItem):
   def __init__(self, entity_list, renderer):
     super().__init__()
@@ -20,7 +22,8 @@ class EntityLayerItem(QGraphicsRectItem):
   def add_graphics_item_for_entity(self, entity):
     try:
       if entity.type in [3, 4, 6, 7]:
-        image = self.renderer.render_entity_sprite(entity)
+        best_frame_index = EntityTypeDocs.get_best_sprite_frame(entity)
+        image = self.renderer.render_entity_sprite_frame(entity, best_frame_index)
         entity_item = EntityImageItem(image, entity, "entity")
         entity_item.setParentItem(self)
       else:
