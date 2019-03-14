@@ -102,14 +102,10 @@ class CustomItemDelegate(QItemDelegate):
     if prop.attribute_name in ["type", "subtype", "form"]:
       editor = QComboBox(parent)
       
-      value = entity.__dict__[prop.attribute_name]
-      
       num_possible_values = 2**prop.num_bits
       for i in range(num_possible_values):
         option_name = EntityTypeDocs.prettify_prop_value(prop, i, entity)
         editor.addItem(option_name)
-      
-      editor.setCurrentIndex(value)
     else:
       editor = QLineEdit(parent)
     return editor
@@ -117,7 +113,8 @@ class CustomItemDelegate(QItemDelegate):
   def setEditorData(self, editor, index):
     prop = index.model().get_property_by_row(index.row())
     if prop.attribute_name in ["type", "subtype", "form"]:
-      editor
+      value_index = editor.findText(index.data())
+      editor.setCurrentIndex(value_index)
     else:
       editor.setText(index.data())
 
