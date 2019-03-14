@@ -18,7 +18,7 @@ ENTITY_PROPERTIES_BY_CLASS = {
     Property("Unknown 1", "unknown_1", 4),
     Property("Unknown 2", "unknown_2", 8),
     Property("Subtype", "subtype", 8),
-    Property("Unknown 3", "unknown_3", 8),
+    Property("Unknown 3", "form", 8),
     Property("Unknown 4", "unknown_4", 32),
     Property("X Pos", "x_pos", 16),
     Property("Y Pos", "y_pos", 16),
