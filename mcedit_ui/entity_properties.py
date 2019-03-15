@@ -33,6 +33,7 @@ ENTITY_PROPERTIES_BY_CLASS = {
     Property("Unknown 2", "unknown_2", 8),
     Property("X Pos", "x_pos", 6),
     Property("Y Pos", "y_pos", 6),
+    Property("Unknown 3", "unknown_3", 4),
     Property("Message ID", "message_id", 16),
   ],
   
