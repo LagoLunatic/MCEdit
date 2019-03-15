@@ -144,7 +144,12 @@ class MCEditorWindow(QMainWindow):
     
     if room_index >= 0 and room_index < len(self.area.rooms):
       self.room = self.area.rooms[room_index]
-      self.room_bg_palettes = self.renderer.generate_palettes_for_area_by_gfx_index(self.area, self.room.gfx_index)
+      
+      if self.room.layers_asset_list is None:
+        gfx_index = 0
+      else:
+        gfx_index = self.room.gfx_index
+      self.room_bg_palettes = self.renderer.generate_palettes_for_area_by_gfx_index(self.area, gfx_index)
     else:
       self.room = None
       self.room_bg_palettes = None
