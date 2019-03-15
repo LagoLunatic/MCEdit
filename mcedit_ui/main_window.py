@@ -38,6 +38,8 @@ class MCEditorWindow(QMainWindow):
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
     
+    self.ui.scrollArea.setFrameShape(QFrame.NoFrame)
+    
     self.room_graphics_scene = ClickableGraphicsScene()
     self.ui.room_graphics_view.setScene(self.room_graphics_scene)
     self.ui.room_graphics_view.setFocus()
