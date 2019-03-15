@@ -7,8 +7,6 @@ import traceback
 
 from mcedit_ui.custom_graphics_items import *
 
-from mclib.docs import Docs
-
 class EntityLayerItem(QGraphicsRectItem):
   def __init__(self, entity_lists, renderer, room_bg_palettes):
     super().__init__()
@@ -34,8 +32,7 @@ class EntityLayerItem(QGraphicsRectItem):
     try:
       image = None
       if entity.type in [3, 4, 6, 7]:
-        best_frame_index = Docs.get_best_sprite_frame(entity)
-        image = self.renderer.render_entity_sprite_frame(entity, self.room_bg_palettes, best_frame_index)
+        image = self.renderer.render_entity_sprite_frame(entity, self.room_bg_palettes)
       
       if image is None:
         entity_item = EntityRectItem(entity, "entity")
