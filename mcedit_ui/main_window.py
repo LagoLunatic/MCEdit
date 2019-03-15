@@ -286,6 +286,7 @@ class MCEditorWindow(QMainWindow):
     #self.ui.map_graphics_view.resize(map_image.size[0]+4, map_image.size[1]+4)
     
     self.selected_room_graphics_item = QGraphicsRectItem()
+    self.selected_room_graphics_item.setPen(QPen(QColor(220, 0, 0, 255)))
     self.selected_room_graphics_item.setRect(0, 0, 0, 0)
     self.map_graphics_scene.addItem(self.selected_room_graphics_item)
     
@@ -332,20 +333,35 @@ class MCEditorWindow(QMainWindow):
     if self.selected_room_graphics_item is None:
       return
     
+    old_rect = self.selected_room_graphics_item.rect()
+    
     if self.room is None:
-      self.selected_room_graphics_item.setRect(
-        0, 0, 0, 0
-      )
+      x = 0
+      y = 0
+      w = 0
+      h = 0
     elif self.area.is_overworld:
-      self.selected_room_graphics_item.setRect(
-        self.room.x_pos/0x19, self.room.y_pos/0x19, self.room.width/0x19-1, self.room.height/0x19-1
-      )
+      x = self.room.x_pos/0x19
+      y = self.room.y_pos/0x19
+      w = self.room.width/0x19-1
+      h = self.room.height/0x19-1
     else:
-      self.selected_room_graphics_item.setRect(
-        self.room.x_pos/0x10, self.room.y_pos/0x10, self.room.width/0x10-1, self.room.height/0x10-1
-      )
+      x = self.room.x_pos/0x10
+      y = self.room.y_pos/0x10
+      w = self.room.width/0x10-1
+      h = self.room.height/0x10-1
+    
+    self.selected_room_graphics_item.setRect(
+      x, y, w, h
+    )
     
     self.map_graphics_scene.setSceneRect(self.map_graphics_scene.itemsBoundingRect())
+    
+    if w != 0:
+      center_x = x + w/2
+      center_y = y + h/2
+      self.ui.map_graphics_view.centerOn(center_x, center_y)
+      self.map_graphics_scene.invalidate(old_rect)
   
   def update_visible_view_items(self):
     self.layer_bg1_view_item.setVisible(self.ui.actionLayer_BG1.isChecked())
