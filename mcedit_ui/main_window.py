@@ -144,12 +144,6 @@ class MCEditorWindow(QMainWindow):
     
     if room_index >= 0 and room_index < len(self.area.rooms):
       self.room = self.area.rooms[room_index]
-      
-      if self.room.layers_asset_list is None:
-        gfx_index = 0
-      else:
-        gfx_index = self.room.gfx_index
-      self.room_bg_palettes = self.renderer.generate_palettes_for_area_by_gfx_index(self.area, gfx_index)
     else:
       self.room = None
       self.room_bg_palettes = None
@@ -171,6 +165,8 @@ class MCEditorWindow(QMainWindow):
     if self.room is None:
       return
     
+    self.load_room_tilesets()
+    
     self.load_room_layers()
     
     self.load_room_entities()
@@ -178,6 +174,25 @@ class MCEditorWindow(QMainWindow):
     self.room_graphics_scene.setSceneRect(self.room_graphics_scene.itemsBoundingRect())
     
     self.update_visible_view_items()
+  
+  def load_room_tilesets(self):
+    if self.room.layers_asset_list is None:
+      gfx_index = 0
+    else:
+      gfx_index = self.room.gfx_index
+    self.room_bg_palettes = self.renderer.generate_palettes_for_area_by_gfx_index(self.area, gfx_index)
+    
+    self.room_tileset_images = [None]*2
+    if self.area.uses_256_color_bg1s:
+      return
+    for layer_index in range(2):
+      try:
+        tileset_image = self.renderer.render_tileset(self.area, self.room.gfx_index, self.room_bg_palettes, layer_index)
+        self.room_tileset_images[layer_index] = tileset_image
+      except Exception as e:
+        stack_trace = traceback.format_exc()
+        error_message = "Error rendering tileset:\n" + str(e) + "\n\n" + stack_trace
+        print(error_message)
   
   def load_room_layers(self):
     self.layer_bg2_view_item = QGraphicsPixmapItem()
@@ -189,9 +204,10 @@ class MCEditorWindow(QMainWindow):
       self.layer_bg1_view_item,
     ]
     
-    try:
-      for layer_index in range(2):
-        layer_image = self.renderer.render_layer(self.room, self.room_bg_palettes, layer_index)
+    for layer_index in range(2):
+      try:
+        tileset_image = self.room_tileset_images[layer_index]
+        layer_image = self.renderer.render_layer(self.room, tileset_image, self.room_bg_palettes, layer_index)
         
         data = layer_image.tobytes('raw', 'BGRA')
         qimage = QImage(data, layer_image.size[0], layer_image.size[1], QImage.Format_ARGB32)
@@ -199,13 +215,13 @@ class MCEditorWindow(QMainWindow):
         
         layer_bg_view_item = layer_bg_view_items[layer_index]
         layer_bg_view_item.setPixmap(pixmap)
-    except Exception as e:
-      stack_trace = traceback.format_exc()
-      error_message = "Error rendering room:\n" + str(e) + "\n\n" + stack_trace
-      print(error_message)
+      except Exception as e:
+        stack_trace = traceback.format_exc()
+        error_message = "Error rendering layer:\n" + str(e) + "\n\n" + stack_trace
+        print(error_message)
   
   def load_room_entities(self):
-    self.entities_view_item = EntityLayerItem(self.room.entity_lists, self.renderer, self.room_bg_palettes)
+    self.entities_view_item = EntityLayerItem(self.room.entity_lists, self.renderer, self.room_bg_palettes, self.room_tileset_images)
     self.room_graphics_scene.addItem(self.entities_view_item)
     
     i = 0
