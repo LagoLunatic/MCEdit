@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Wed Mar 13 20:59:08 2019
+# Created: Thu Mar 14 14:09:22 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 638, 693))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 578, 693))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -63,8 +63,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.entity_properies = EntityProperties(self.centralwidget)
-        self.entity_properies.setMinimumSize(QtCore.QSize(300, 0))
-        self.entity_properies.setMaximumSize(QtCore.QSize(260, 16777215))
+        self.entity_properies.setMinimumSize(QtCore.QSize(360, 0))
+        self.entity_properies.setMaximumSize(QtCore.QSize(360, 16777215))
         self.entity_properies.setObjectName("entity_properies")
         self.verticalLayout_3.addWidget(self.entity_properies)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)

@@ -92,7 +92,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>638</width>
+         <width>578</width>
          <height>693</height>
         </rect>
        </property>
@@ -110,13 +110,13 @@
        <widget class="EntityProperties" name="entity_properies" native="true">
         <property name="minimumSize">
          <size>
-          <width>300</width>
+          <width>360</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>260</width>
+          <width>360</width>
           <height>16777215</height>
          </size>
         </property>
