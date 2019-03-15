@@ -3,7 +3,7 @@ from PySide2.QtGui import *
 from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 
-from mclib.entity_type_docs import EntityTypeDocs
+from mclib.docs import Docs
 
 from collections import namedtuple
 
@@ -104,7 +104,7 @@ class CustomItemDelegate(QItemDelegate):
       
       num_possible_values = 2**prop.num_bits
       for i in range(num_possible_values):
-        option_name = EntityTypeDocs.prettify_prop_value(prop, i, entity)
+        option_name = Docs.prettify_prop_value(prop, i, entity)
         editor.addItem(option_name)
     else:
       editor = QLineEdit(parent)
@@ -169,7 +169,7 @@ class EntityModel(QAbstractItemModel):
         return prop.pretty_name
       else:
         value = self.entity.__dict__[prop.attribute_name]
-        return EntityTypeDocs.prettify_prop_value(prop, value, self.entity)
+        return Docs.prettify_prop_value(prop, value, self.entity)
     else:
       return None
   
