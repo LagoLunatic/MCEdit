@@ -10,11 +10,12 @@ from mcedit_ui.custom_graphics_items import *
 from mclib.entity_type_docs import EntityTypeDocs
 
 class EntityLayerItem(QGraphicsRectItem):
-  def __init__(self, entity_list, renderer):
+  def __init__(self, entity_list, renderer, room_bg_palettes):
     super().__init__()
     
     self.entity_list = entity_list
     self.renderer = renderer
+    self.room_bg_palettes = room_bg_palettes
     
     for entity in self.entity_list.entities:
       self.add_graphics_item_for_entity(entity)
@@ -23,7 +24,7 @@ class EntityLayerItem(QGraphicsRectItem):
     try:
       if entity.type in [3, 4, 6, 7]:
         best_frame_index = EntityTypeDocs.get_best_sprite_frame(entity)
-        image = self.renderer.render_entity_sprite_frame(entity, best_frame_index)
+        image = self.renderer.render_entity_sprite_frame(entity, self.room_bg_palettes, best_frame_index)
         entity_item = EntityImageItem(image, entity, "entity")
         entity_item.setParentItem(self)
       else:

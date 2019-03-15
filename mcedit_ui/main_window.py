@@ -144,8 +144,10 @@ class MCEditorWindow(QMainWindow):
     
     if room_index >= 0 and room_index < len(self.area.rooms):
       self.room = self.area.rooms[room_index]
+      self.room_bg_palettes = self.renderer.generate_palettes_for_area_by_gfx_index(self.area, self.room.gfx_index)
     else:
       self.room = None
+      self.room_bg_palettes = None
     
     self.load_room()
   
@@ -184,9 +186,7 @@ class MCEditorWindow(QMainWindow):
     
     try:
       for layer_index in range(2):
-        palettes = self.renderer.generate_palettes_for_area_by_gfx_index(self.area, self.room.gfx_index)
-        
-        layer_image = self.renderer.render_layer(self.room, palettes, layer_index)
+        layer_image = self.renderer.render_layer(self.room, self.room_bg_palettes, layer_index)
         
         data = layer_image.tobytes('raw', 'BGRA')
         qimage = QImage(data, layer_image.size[0], layer_image.size[1], QImage.Format_ARGB32)
@@ -209,7 +209,7 @@ class MCEditorWindow(QMainWindow):
       list_widget_item.setCheckState(Qt.Checked)
       self.ui.entity_lists_list.addItem(list_widget_item)
       
-      entity_list_view_item = EntityLayerItem(entity_list, self.renderer)
+      entity_list_view_item = EntityLayerItem(entity_list, self.renderer, self.room_bg_palettes)
       entity_list_view_item.setParentItem(self.entities_view_item)
       self.entity_list_view_items.append(entity_list_view_item)
     
