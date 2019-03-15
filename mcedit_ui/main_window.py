@@ -200,18 +200,16 @@ class MCEditorWindow(QMainWindow):
       print(error_message)
   
   def load_room_entities(self):
-    self.entities_view_item = QGraphicsRectItem()
+    self.entities_view_item = EntityLayerItem(self.room.entity_lists, self.renderer, self.room_bg_palettes)
     self.room_graphics_scene.addItem(self.entities_view_item)
-    self.entity_list_view_items = []
-    for i, entity_list in enumerate(self.room.entity_lists):
+    
+    i = 0
+    for entity_list, graphics_items in self.entities_view_item.entity_graphics_items_by_entity_list:
       list_widget_item = QListWidgetItem("%02X %08X %s" % (i, entity_list.entity_list_ptr, entity_list.name))
       list_widget_item.setFlags(list_widget_item.flags() | Qt.ItemIsUserCheckable)
       list_widget_item.setCheckState(Qt.Checked)
       self.ui.entity_lists_list.addItem(list_widget_item)
-      
-      entity_list_view_item = EntityLayerItem(entity_list, self.renderer, self.room_bg_palettes)
-      entity_list_view_item.setParentItem(self.entities_view_item)
-      self.entity_list_view_items.append(entity_list_view_item)
+      i += 1
     
     self.tile_entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.tile_entities_view_item)
@@ -335,7 +333,10 @@ class MCEditorWindow(QMainWindow):
   
   def entity_list_visibility_toggled(self, list_widget_item):
     entity_list_index = int(list_widget_item.text().split(" ")[0], 16)
-    self.entity_list_view_items[entity_list_index].setVisible(list_widget_item.checkState() == Qt.Checked)
+    entity_list, graphics_items = self.entities_view_item.entity_graphics_items_by_entity_list[entity_list_index]
+    
+    for entity_item in graphics_items:
+      entity_item.setVisible(list_widget_item.checkState() == Qt.Checked)
   
   def select_entity(self, entity_graphics_item):
     self.ui.entity_properies.select_entity(entity_graphics_item)

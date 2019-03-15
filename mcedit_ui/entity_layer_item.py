@@ -10,15 +10,25 @@ from mcedit_ui.custom_graphics_items import *
 from mclib.entity_type_docs import EntityTypeDocs
 
 class EntityLayerItem(QGraphicsRectItem):
-  def __init__(self, entity_list, renderer, room_bg_palettes):
+  def __init__(self, entity_lists, renderer, room_bg_palettes):
     super().__init__()
     
-    self.entity_list = entity_list
+    self.entity_lists = entity_lists
     self.renderer = renderer
     self.room_bg_palettes = room_bg_palettes
     
-    for entity in self.entity_list.entities:
-      self.add_graphics_item_for_entity(entity)
+    self.entity_graphics_items_by_entity_list = []
+    z_value = 9999
+    for entity_list in self.entity_lists:
+      graphics_items_for_list = []
+      self.entity_graphics_items_by_entity_list.append((entity_list, graphics_items_for_list))
+      
+      for entity in entity_list.entities:
+        entity_item = self.add_graphics_item_for_entity(entity)
+        graphics_items_for_list.append(entity_item)
+        
+        entity_item.setZValue(z_value)
+        z_value -= 1
   
   def add_graphics_item_for_entity(self, entity):
     try:
@@ -43,3 +53,5 @@ class EntityLayerItem(QGraphicsRectItem):
       
       entity_item = EntityRectItem(entity, "entity")
       entity_item.setParentItem(self)
+    
+    return entity_item
