@@ -63,6 +63,9 @@ class EntityImageItem(GraphicsImageItem):
     
     if entity_class == "tile_entity":
       self.setPos(entity.x_pos*16+8, entity.y_pos*16+8)
+    elif entity_class == "entity" and entity.type == 9:
+      # Type 9 have no position
+      pass
     else:
       self.setPos(entity.x_pos, entity.y_pos)
 
@@ -91,7 +94,9 @@ class EntityRectItem(QGraphicsRectItem):
       self.init_exit()
   
   def init_entity(self):
-    self.setPos(self.entity.x_pos, self.entity.y_pos)
+    if self.entity.type != 9:
+      # Type 9 have no position
+      self.setPos(self.entity.x_pos, self.entity.y_pos)
     
     if self.entity.type == 3:
       self.setBrush(self.ENEMY_BRUSH)
