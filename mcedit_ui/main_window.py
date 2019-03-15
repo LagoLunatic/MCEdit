@@ -317,11 +317,11 @@ class MCEditorWindow(QMainWindow):
       )
     elif self.area.is_overworld:
       self.selected_room_graphics_item.setRect(
-        self.room.x_pos/0x19, self.room.y_pos/0x19, self.room.width/0x19, self.room.height/0x19
+        self.room.x_pos/0x19, self.room.y_pos/0x19, self.room.width/0x19-1, self.room.height/0x19-1
       )
     else:
       self.selected_room_graphics_item.setRect(
-        self.room.x_pos/0x10, self.room.y_pos/0x10, self.room.width/0x10, self.room.height/0x10
+        self.room.x_pos/0x10, self.room.y_pos/0x10, self.room.width/0x10-1, self.room.height/0x10-1
       )
     
     self.map_graphics_scene.setSceneRect(self.map_graphics_scene.itemsBoundingRect())
