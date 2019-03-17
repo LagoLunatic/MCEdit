@@ -52,6 +52,17 @@ ENTITY_PROPERTIES_BY_CLASS = {
     Property("Unknown 4", "unknown_4", 16),
     Property("Padding", "padding", 16),
   ],
+  
+  "exit_region": [
+    Property("ROM Location", "region_ptr", 32),
+    Property("Center X", "center_x", 16),
+    Property("Center Y", "center_y", 16),
+    Property("Width/2", "half_width", 8),
+    Property("Height/2", "half_height", 8),
+    Property("Which Exit", "exit_pointer_property_index", 8),
+    Property("Unknown", "unknown_bitfield", 8),
+    # TODO: how to display both the exit region AND the exit's properties at once?
+  ],
 }
 
 class EntityProperties(QWidget):
@@ -93,6 +104,10 @@ class EntityProperties(QWidget):
       self.entity_label.setText("Tile entity properties:")
     elif entity_class == "exit":
       self.entity_label.setText("Exit properties:")
+    elif entity_class == "exit_region":
+      self.entity_label.setText("Exit region properties:")
+    else:
+      raise Exception("Unknown entity class: %s" % entity_class)
 
 class CustomItemDelegate(QItemDelegate):
   def createEditor(self, parent, option, index):

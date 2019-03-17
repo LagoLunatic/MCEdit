@@ -90,6 +90,8 @@ class EntityRectItem(QGraphicsRectItem):
       self.init_tile_entity()
     elif entity_class == "exit":
       self.init_exit()
+    elif entity_class == "exit_region":
+      self.init_exit_region()
   
   def init_entity(self):
     self.setPos(self.entity.x_pos, self.entity.y_pos)
@@ -129,3 +131,9 @@ class EntityRectItem(QGraphicsRectItem):
         # Leftwards screen edge transition
         self.setPos(0 - ((ext.unknown_1 & 0xC0) >> 6)*0x10, 0)
         self.setRect(0, 0, 16, room.height)
+  
+  def init_exit_region(self):
+    self.setBrush(self.EXIT_BRUSH)
+    
+    self.setPos(self.entity.center_x, self.entity.center_y)
+    self.setRect(-self.entity.half_width, -self.entity.half_height, self.entity.half_width*2, self.entity.half_height*2)

@@ -273,6 +273,11 @@ class MCEditorWindow(QMainWindow):
       entity_item = EntityRectItem(ext, "exit")
       entity_item.setParentItem(self.exits_view_item)
     
+    for regions in self.room.exit_region_lists:
+      for region in regions:
+        entity_item = EntityRectItem(region, "exit_region")
+        entity_item.setParentItem(self.exits_view_item)
+    
     self.select_entity_graphics_item(None)
   
   def room_clicked(self, x, y, button):
@@ -287,6 +292,9 @@ class MCEditorWindow(QMainWindow):
       elif button == Qt.RightButton and graphics_item.entity_class == "exit":
         # Go through the exit into the destination room.
         self.change_area_and_room(graphics_item.entity.dest_area, graphics_item.entity.dest_room)
+      elif button == Qt.RightButton and graphics_item.entity_class == "exit_region":
+        # Go through the exit into the destination room.
+        self.change_area_and_room(graphics_item.entity.exit.dest_area, graphics_item.entity.exit.dest_room)
     else:
       self.select_entity_graphics_item(None)
   
