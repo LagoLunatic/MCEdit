@@ -11,6 +11,7 @@ from mcedit_ui.entity_search_dialog import *
 
 from mclib.game import Game
 from mclib.renderer import Renderer
+from mclib.docs import AREA_INDEX_TO_NAME
 
 import os
 from collections import OrderedDict
@@ -118,7 +119,7 @@ class MCEditorWindow(QMainWindow):
     self.ui.area_index.clear()
     self.ui.room_index.clear()
     for area in self.game.areas:
-      area_name = self.game.area_index_to_name[area.area_index]
+      area_name = AREA_INDEX_TO_NAME[area.area_index]
       self.ui.area_index.addItem("%02X %s" % (area.area_index, area_name))
     self.area_index_changed(0)
   
