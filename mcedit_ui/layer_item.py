@@ -24,6 +24,19 @@ class LayerItem(QGraphicsRectItem):
     room = self.room
     layer_index = self.layer_index
     
+    if room.area.uses_256_color_bg1s:
+      if layer_index == 1:
+        self.render_layer_256_color()
+      else:
+        # Their BG2s may be unused? They seem to error out when trying to render them. TODO figure them out
+        pass
+    else:
+      self.render_layer_16_color()
+  
+  def render_layer_16_color(self):
+    room = self.room
+    layer_index = self.layer_index
+    
     palettes = self.renderer.generate_palettes_for_area_by_gfx_index(room.area, room.gfx_index)
     tileset_image = self.renderer.render_tileset(room.area, room.gfx_index, palettes, layer_index)
     
@@ -54,3 +67,17 @@ class LayerItem(QGraphicsRectItem):
       
       tile_item = QGraphicsPixmapItem(tile_pixmap, self)
       tile_item.setPos(x, y)
+  
+  def render_layer_256_color(self):
+    room = self.room
+    layer_index = self.layer_index
+    
+    palettes = self.renderer.generate_palettes_for_area_by_gfx_index(room.area, room.gfx_index)
+    
+    layer_image = self.renderer.render_layer_256_color(self.room, palettes, layer_index)
+    
+    data = layer_image.tobytes('raw', 'BGRA')
+    qimage = QImage(data, layer_image.size[0], layer_image.size[1], QImage.Format_ARGB32)
+    layer_pixmap = QPixmap.fromImage(qimage)
+    
+    graphics_item = QGraphicsPixmapItem(layer_pixmap, self)
