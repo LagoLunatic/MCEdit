@@ -8,6 +8,7 @@ from mcedit_ui.clickable_graphics_scene import *
 from mcedit_ui.custom_graphics_items import *
 from mcedit_ui.entity_layer_item import *
 from mcedit_ui.entity_search_dialog import *
+from mcedit_ui.layer_item import *
 
 from mclib.game import Game
 from mclib.renderer import Renderer
@@ -225,30 +226,10 @@ class MCEditorWindow(QMainWindow):
         print(error_message)
   
   def load_room_layers(self):
-    self.layer_bg2_view_item = QGraphicsPixmapItem()
+    self.layer_bg2_view_item = LayerItem(self.room, 0, self.renderer)
     self.room_graphics_scene.addItem(self.layer_bg2_view_item)
-    self.layer_bg1_view_item = QGraphicsPixmapItem()
+    self.layer_bg1_view_item = LayerItem(self.room, 1, self.renderer)
     self.room_graphics_scene.addItem(self.layer_bg1_view_item)
-    layer_bg_view_items = [
-      self.layer_bg2_view_item,
-      self.layer_bg1_view_item,
-    ]
-    
-    for layer_index in range(2):
-      try:
-        tileset_image = self.room_tileset_images[layer_index]
-        layer_image = self.renderer.render_layer(self.room, tileset_image, self.room_bg_palettes, layer_index)
-        
-        data = layer_image.tobytes('raw', 'BGRA')
-        qimage = QImage(data, layer_image.size[0], layer_image.size[1], QImage.Format_ARGB32)
-        pixmap = QPixmap.fromImage(qimage)
-        
-        layer_bg_view_item = layer_bg_view_items[layer_index]
-        layer_bg_view_item.setPixmap(pixmap)
-      except Exception as e:
-        stack_trace = traceback.format_exc()
-        error_message = "Error rendering layer:\n" + str(e) + "\n\n" + stack_trace
-        print(error_message)
   
   def load_room_entities(self):
     self.entities_view_item = EntityLayerItem(self.room.entity_lists, self.renderer, self.room_bg_palettes, self.room_tileset_images)
