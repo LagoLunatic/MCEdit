@@ -11,7 +11,7 @@ import re
 
 class EntitySearchDialog(QDialog):
   def __init__(self, main_window):
-    super().__init__(main_window, Qt.WindowTitleHint | Qt.WindowSystemMenuHint)
+    super().__init__(main_window, Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowCloseButtonHint)
     self.ui = Ui_EntitySearch()
     self.ui.setupUi(self)
     
