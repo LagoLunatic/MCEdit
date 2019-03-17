@@ -80,6 +80,7 @@ class EntityRectItem(QGraphicsRectItem):
     
     self.setFlag(QGraphicsItem.ItemIsMovable)
     #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+    self.setFlag(QGraphicsItem.ItemIsSelectable)
     
     self.setCursor(QCursor(Qt.SizeAllCursor))
     
