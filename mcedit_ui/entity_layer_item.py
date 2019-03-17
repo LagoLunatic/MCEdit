@@ -45,7 +45,7 @@ class EntityLayerItem(QGraphicsRectItem):
       stack_trace = traceback.format_exc()
       error_message = "Error rendering entity sprite in room %02X-%02X:\n" % (entity.room.area.area_index, entity.room.room_index)
       error_message += str(e) + "\n\n" + stack_trace
-      with open("./wip/entity render error %02X-%02X-%02X.txt" % (entity.type, entity.subtype, entity.form), "w") as f:
+      with open("./logs/entity render error %02X-%02X-%02X.txt" % (entity.type, entity.subtype, entity.form), "w") as f:
         f.write(error_message)
       #print(error_message)
       
