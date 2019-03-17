@@ -7,6 +7,7 @@ from mcedit_ui.ui_main import Ui_MainWindow
 from mcedit_ui.clickable_graphics_scene import *
 from mcedit_ui.custom_graphics_items import *
 from mcedit_ui.entity_layer_item import *
+from mcedit_ui.entity_search_dialog import *
 
 from mclib.game import Game
 from mclib.renderer import Renderer
@@ -38,6 +39,8 @@ class MCEditorWindow(QMainWindow):
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
     
+    self.open_dialogs = []
+    
     self.ui.scrollArea.setFrameShape(QFrame.NoFrame)
     
     self.room_graphics_scene = ClickableGraphicsScene()
@@ -49,8 +52,6 @@ class MCEditorWindow(QMainWindow):
     self.ui.map_graphics_view.setScene(self.map_graphics_scene)
     self.map_graphics_scene.clicked.connect(self.map_clicked)
     
-    self.load_settings()
-    
     self.ui.actionOpen_ROM.triggered.connect(self.open_rom_dialog)
     
     self.ui.actionLayer_BG1.triggered.connect(self.update_visible_view_items)
@@ -58,6 +59,8 @@ class MCEditorWindow(QMainWindow):
     self.ui.actionEntities.triggered.connect(self.update_visible_view_items)
     self.ui.actionTile_Entities.triggered.connect(self.update_visible_view_items)
     self.ui.actionExits.triggered.connect(self.update_visible_view_items)
+    
+    self.ui.actionEntity_Search.triggered.connect(self.open_entity_search)
     
     self.ui.area_index.activated.connect(self.area_index_changed)
     self.ui.room_index.activated.connect(self.room_index_changed)
@@ -68,6 +71,8 @@ class MCEditorWindow(QMainWindow):
     
     #icon_path = os.path.join(ASSETS_PATH, "icon.ico")
     #self.setWindowIcon(QIcon(icon_path))
+    
+    self.load_settings()
     
     self.setWindowState(Qt.WindowMaximized)
     
@@ -100,6 +105,8 @@ class MCEditorWindow(QMainWindow):
     self.open_rom(rom_path)
   
   def open_rom(self, rom_path):
+    self.close_open_dialogs()
+    
     self.settings["last_used_rom"] = rom_path
     
     self.game = Game(rom_path)
@@ -410,6 +417,17 @@ class MCEditorWindow(QMainWindow):
     for entity_graphics_item in self.entities_view_item.childItems():
       if entity_graphics_item.entity == entity:
         self.select_entity_graphics_item(entity_graphics_item)
+  
+  
+  def close_open_dialogs(self):
+    for dialog in self.open_dialogs:
+      dialog.close()
+    self.open_dialogs = []
+  
+  def open_entity_search(self):
+    entity_search_dialog = EntitySearchDialog(self)
+    self.open_dialogs.append(entity_search_dialog)
+  
   
   def keyPressEvent(self, event):
     if event.key() == Qt.Key_Escape:

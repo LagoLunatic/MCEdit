@@ -85,7 +85,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>845</width>
+          <width>886</width>
           <height>693</height>
          </rect>
         </property>
@@ -163,8 +163,15 @@
     <addaction name="actionTile_Entities"/>
     <addaction name="actionExits"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionEntity_Search"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen_ROM">
@@ -225,6 +232,14 @@
    </property>
    <property name="text">
     <string>Exits</string>
+   </property>
+  </action>
+  <action name="actionEntity_Search">
+   <property name="text">
+    <string>Entity Search</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>
