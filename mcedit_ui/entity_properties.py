@@ -72,7 +72,7 @@ class EntityProperties(QWidget):
     self.properties_tree.hide()
     v_layout.addWidget(self.properties_tree)
   
-  def select_entity(self, entity_graphics_item):
+  def select_entity_graphics_item(self, entity_graphics_item):
     if entity_graphics_item is None:
       self.entity_label.setText("(No entity selected.)")
       self.entity_model.entity = None

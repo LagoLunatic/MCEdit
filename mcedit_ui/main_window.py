@@ -158,6 +158,11 @@ class MCEditorWindow(QMainWindow):
     
     self.room_index_changed(room_index)
   
+  def go_to_room_and_select_entity(self, entity):
+    if entity.room.area.area_index != self.area.area_index or entity.room.room_index != self.room.room_index:
+      self.change_area_and_room(entity.room.area.area_index, entity.room.room_index)
+    self.select_entity(entity)
+  
   def load_room(self):
     self.room_graphics_scene.clear()
     self.ui.entity_lists_list.clear()
@@ -167,11 +172,26 @@ class MCEditorWindow(QMainWindow):
     if self.room is None:
       return
     
-    self.load_room_tilesets()
+    try:
+      self.load_room_tilesets()
+    except Exception as e:
+      stack_trace = traceback.format_exc()
+      error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
+      print(error_message)
     
-    self.load_room_layers()
+    try:
+      self.load_room_layers()
+    except Exception as e:
+      stack_trace = traceback.format_exc()
+      error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
+      print(error_message)
     
-    self.load_room_entities()
+    try:
+      self.load_room_entities()
+    except Exception as e:
+      stack_trace = traceback.format_exc()
+      error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
+      print(error_message)
     
     self.room_graphics_scene.setSceneRect(self.room_graphics_scene.itemsBoundingRect())
     
@@ -246,22 +266,22 @@ class MCEditorWindow(QMainWindow):
       entity_item = EntityRectItem(ext, "exit")
       entity_item.setParentItem(self.exits_view_item)
     
-    self.select_entity(None)
+    self.select_entity_graphics_item(None)
   
   def room_clicked(self, x, y, button):
     graphics_item = self.room_graphics_scene.itemAt(x, y)
     if graphics_item is None:
-      self.select_entity(None)
+      self.select_entity_graphics_item(None)
       return
     
     if isinstance(graphics_item, EntityRectItem) or isinstance(graphics_item, EntityImageItem):
       if button == Qt.LeftButton:
-        self.select_entity(graphics_item)
+        self.select_entity_graphics_item(graphics_item)
       elif button == Qt.RightButton and graphics_item.entity_class == "exit":
         # Go through the exit into the destination room.
         self.change_area_and_room(graphics_item.entity.dest_area, graphics_item.entity.dest_room)
     else:
-      self.select_entity(None)
+      self.select_entity_graphics_item(None)
   
   def load_map(self):
     self.map_graphics_scene.clear()
@@ -377,8 +397,19 @@ class MCEditorWindow(QMainWindow):
     for entity_item in graphics_items:
       entity_item.setVisible(list_widget_item.checkState() == Qt.Checked)
   
-  def select_entity(self, entity_graphics_item):
-    self.ui.entity_properies.select_entity(entity_graphics_item)
+  def select_entity_graphics_item(self, entity_graphics_item):
+    if entity_graphics_item:
+      for other_entity_graphics_item in self.entities_view_item.childItems():
+        other_entity_graphics_item.setSelected(False)
+      
+      entity_graphics_item.setSelected(True)
+    
+    self.ui.entity_properies.select_entity_graphics_item(entity_graphics_item)
+  
+  def select_entity(self, entity):
+    for entity_graphics_item in self.entities_view_item.childItems():
+      if entity_graphics_item.entity == entity:
+        self.select_entity_graphics_item(entity_graphics_item)
   
   def keyPressEvent(self, event):
     if event.key() == Qt.Key_Escape:
