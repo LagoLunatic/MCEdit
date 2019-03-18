@@ -103,7 +103,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QGraphicsView" name="room_graphics_view"/>
+          <widget class="RoomView" name="room_graphics_view"/>
          </item>
         </layout>
        </widget>
@@ -249,6 +249,11 @@
    <extends>QWidget</extends>
    <header>mcedit_ui.entity_properties</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RoomView</class>
+   <extends>QGraphicsView</extends>
+   <header>mcedit_ui.room_view</header>
   </customwidget>
  </customwidgets>
  <resources/>

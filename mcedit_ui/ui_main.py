@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Sat Mar 16 20:31:57 2019
+# Created: Sun Mar 17 23:39:01 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -64,7 +64,7 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.room_graphics_view = QtWidgets.QGraphicsView(self.scrollAreaWidgetContents)
+        self.room_graphics_view = RoomView(self.scrollAreaWidgetContents)
         self.room_graphics_view.setObjectName("room_graphics_view")
         self.verticalLayout.addWidget(self.room_graphics_view)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -152,4 +152,5 @@ class Ui_MainWindow(object):
         self.actionEntity_Search.setText(QtWidgets.QApplication.translate("MainWindow", "Entity Search", None, -1))
         self.actionEntity_Search.setShortcut(QtWidgets.QApplication.translate("MainWindow", "Ctrl+F", None, -1))
 
+from mcedit_ui.room_view import RoomView
 from mcedit_ui.entity_properties import EntityProperties
