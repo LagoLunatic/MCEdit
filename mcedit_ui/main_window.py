@@ -122,9 +122,22 @@ class MCEditorWindow(QMainWindow):
     for area in self.game.areas:
       area_name = AREA_INDEX_TO_NAME[area.area_index]
       self.ui.area_index.addItem("%02X %s" % (area.area_index, area_name))
-    self.area_index_changed(0)
+    
+    try:
+      if "last_area_index" in self.settings:
+        area_index = self.settings["last_area_index"]
+        room_index = self.settings["last_room_index"]
+      else:
+        area_index = 0
+        room_index = 0
+      self.area_index_changed(area_index, default_room_index=room_index)
+    except Exception as e:
+      stack_trace = traceback.format_exc()
+      error_message = "Error loading map:\n" + str(e) + "\n\n" + stack_trace
+      print(error_message)
+      return
   
-  def area_index_changed(self, area_index, skip_loading_room=False):
+  def area_index_changed(self, area_index, skip_loading_room=False, default_room_index=0):
     self.area_index = area_index
     self.ui.area_index.setCurrentIndex(area_index)
     self.ui.room_index.clear()
@@ -160,6 +173,9 @@ class MCEditorWindow(QMainWindow):
       self.room_bg_palettes = None
     
     self.load_room()
+    
+    self.settings["last_area_index"] = self.area_index
+    self.settings["last_room_index"] = self.room_index
   
   def change_area_and_room(self, area_index, room_index):
     if self.area_index != area_index:
