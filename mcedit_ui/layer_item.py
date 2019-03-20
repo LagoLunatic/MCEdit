@@ -5,6 +5,8 @@ from PySide2.QtWidgets import *
 
 import traceback
 
+from mclib.visual_zone import VisualZone
+
 class LayerItem(QGraphicsRectItem):
   def __init__(self, room, layer_index, renderer):
     super().__init__()
@@ -12,6 +14,7 @@ class LayerItem(QGraphicsRectItem):
     self.room = room
     self.layer_index = layer_index
     self.renderer = renderer
+    self.rom = room.rom
     
     try:
       self.render_layer()
@@ -37,9 +40,11 @@ class LayerItem(QGraphicsRectItem):
     room = self.room
     layer_index = self.layer_index
     
-    self.gfx_data = room.area.get_gfx_asset_list(room.gfx_index).gfx_data
+    orig_gfx_data = room.area.get_gfx_asset_list(room.gfx_index).gfx_data
     if layer_index >= 1:
-      self.gfx_data = self.gfx_data.read_raw(0x4000, len(self.gfx_data)-0x4000)
+      self.gfx_data = orig_gfx_data.read_raw(0x4000, len(orig_gfx_data)-0x4000)
+    else:
+      self.gfx_data = orig_gfx_data
     self.palettes = self.renderer.generate_palettes_for_area_by_gfx_index(room.area, room.gfx_index)
     self.tile_mapping_8x8_data = room.area.tilesets_asset_list.tile_mappings[layer_index]
     
@@ -47,7 +52,7 @@ class LayerItem(QGraphicsRectItem):
     if tile_mapping_16x16_data is None:
       raise Exception("Layer BG%d has no 16x16 tile mapping" % (layer_index+1))
     
-    self.cached_8x8_tile_images_by_tile_attrs = {}
+    self.cached_8x8_tile_images_by_tile_attrs_and_zone_ids = {}
     
     room_width_in_16x16_tiles = room.width//16
     
@@ -62,29 +67,61 @@ class LayerItem(QGraphicsRectItem):
       if tile_index_16x16 in cached_tile_pixmaps_by_16x16_index:
         tile_pixmap = cached_tile_pixmaps_by_16x16_index[tile_index_16x16]
       else:
-        tile_pixmap = self.render_tile_pixmap_by_16x16_tile_index(tile_index_16x16)
+        tile_pixmap = self.render_tile_pixmap_by_16x16_tile_index(tile_index_16x16, x, y)
         
         cached_tile_pixmaps_by_16x16_index[tile_index_16x16] = tile_pixmap
       
       tile_item = QGraphicsPixmapItem(tile_pixmap, self)
       tile_item.setPos(x, y)
   
-  def render_tile_pixmap_by_16x16_tile_index(self, tile_index_16x16):
+  def render_tile_pixmap_by_16x16_tile_index(self, tile_index_16x16, x, y):
+    room = self.room
+    layer_index = self.layer_index
+    gfx_data = self.gfx_data
+    palettes = self.palettes
+    zone_ids = []
+    
+    if self.room.zone_lists:
+      zone_ids = VisualZone.get_zone_ids_overlapping_point(self.room.zone_lists, x, y)
+      
+      if zone_ids:
+        gfx_data = gfx_data.copy()
+      
+      for zone_id in zone_ids:
+        zone_data = room.visual_zone_datas[zone_id]
+        
+        if zone_data.palette_group_index is not None:
+          palettes = self.renderer.generate_palettes_from_palette_group_by_index(zone_data.palette_group_index)
+        
+        for zone_gfx_data_ptr, zone_gfx_load_offset in zone_data.gfx_load_datas:
+          if layer_index >= 1:
+            zone_gfx_load_offset -= 0x4000
+            if zone_gfx_load_offset < 0:
+              continue
+          
+          zone_gfx_data = self.rom.read_raw(zone_gfx_data_ptr, 0x1000)
+          gfx_data.write_raw(zone_gfx_load_offset, zone_gfx_data)
+    
     tile_image_16x16 = QImage(16, 16, QImage.Format_ARGB32)
     tile_image_16x16.fill(0)
     painter = QPainter(tile_image_16x16)
+    
+    zone_ids_tuple = tuple(zone_ids)
+    if zone_ids_tuple not in self.cached_8x8_tile_images_by_tile_attrs_and_zone_ids:
+      self.cached_8x8_tile_images_by_tile_attrs_and_zone_ids[zone_ids_tuple] = {}
+    cached_8x8_tile_images_by_tile_attrs = self.cached_8x8_tile_images_by_tile_attrs_and_zone_ids[zone_ids_tuple]
     
     try:
       for tile_8x8_i in range(4):
         tile_attrs = self.tile_mapping_8x8_data.read_u16(tile_index_16x16*8 + tile_8x8_i*2)
         
-        if tile_attrs in self.cached_8x8_tile_images_by_tile_attrs:
-          tile_image_8x8 = self.cached_8x8_tile_images_by_tile_attrs[tile_attrs]
+        if tile_attrs in cached_8x8_tile_images_by_tile_attrs:
+          tile_image_8x8 = cached_8x8_tile_images_by_tile_attrs[tile_attrs]
         else:
-          pil_image = self.renderer.render_tile_by_tile_attrs(tile_attrs, self.gfx_data, self.palettes)
+          pil_image = self.renderer.render_tile_by_tile_attrs(tile_attrs, gfx_data, palettes)
           data = pil_image.tobytes('raw', 'BGRA')
           tile_image_8x8 = QImage(data, pil_image.size[0], pil_image.size[1], QImage.Format_ARGB32)
-          self.cached_8x8_tile_images_by_tile_attrs[tile_attrs] = tile_image_8x8
+          cached_8x8_tile_images_by_tile_attrs[tile_attrs] = tile_image_8x8
         
         x_on_16x16_tile = (tile_8x8_i % 2)*8
         y_on_16x16_tile = (tile_8x8_i // 2)*8
