@@ -115,6 +115,12 @@ class LayerItem(QGraphicsRectItem):
       for tile_8x8_i in range(4):
         tile_attrs = self.tile_mapping_8x8_data.read_u16(tile_index_16x16*8 + tile_8x8_i*2)
         
+        horizontal_flip = (tile_attrs & 0x0400) > 0
+        vertical_flip   = (tile_attrs & 0x0800) > 0
+        
+        # Remove flip bits so all 4 orientations can be cached together as one.
+        tile_attrs &= (~0x0C00)
+        
         if tile_attrs in cached_8x8_tile_images_by_tile_attrs:
           tile_image_8x8 = cached_8x8_tile_images_by_tile_attrs[tile_attrs]
         else:
@@ -122,6 +128,13 @@ class LayerItem(QGraphicsRectItem):
           data = pil_image.tobytes('raw', 'BGRA')
           tile_image_8x8 = QImage(data, pil_image.size[0], pil_image.size[1], QImage.Format_ARGB32)
           cached_8x8_tile_images_by_tile_attrs[tile_attrs] = tile_image_8x8
+        
+        if horizontal_flip and vertical_flip:
+          tile_image_8x8 = tile_image_8x8.transformed(QTransform.fromScale(-1, -1))
+        elif horizontal_flip:
+          tile_image_8x8 = tile_image_8x8.transformed(QTransform.fromScale(-1, 1))
+        elif vertical_flip:
+          tile_image_8x8 = tile_image_8x8.transformed(QTransform.fromScale(1, -1))
         
         x_on_16x16_tile = (tile_8x8_i % 2)*8
         y_on_16x16_tile = (tile_8x8_i // 2)*8
