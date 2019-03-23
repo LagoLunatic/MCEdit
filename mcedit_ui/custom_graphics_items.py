@@ -3,6 +3,19 @@ from PySide2.QtGui import *
 from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 
+class GenericEntityGraphicsItem(QGraphicsItem):
+  def __init__(self, entity, entity_class):
+    self.entity = entity
+    self.entity_class = entity_class
+    
+    self.setFlag(QGraphicsItem.ItemIsMovable)
+    #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+    self.setFlag(QGraphicsItem.ItemIsSelectable)
+    
+    self.setCursor(QCursor(Qt.SizeAllCursor))
+    
+    self.update_from_entity()
+
 class GraphicsImageItem(QGraphicsPixmapItem):
   def __init__(self, pil_image=None):
     super().__init__()
@@ -60,50 +73,28 @@ class GraphicsImageItem(QGraphicsPixmapItem):
     
     super().paint(painter, option, widget)
 
-class EntityImageItem(GraphicsImageItem):
+class EntityImageItem(GraphicsImageItem, GenericEntityGraphicsItem):
   def __init__(self, entity, entity_class, renderer):
-    super().__init__()
-    
-    self.entity = entity
-    self.entity_class = entity_class
     self.renderer = renderer
     
-    self.setFlag(QGraphicsItem.ItemIsMovable)
-    #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-    self.setFlag(QGraphicsItem.ItemIsSelectable)
-    
-    self.setCursor(QCursor(Qt.SizeAllCursor))
-    
-    self.update_from_entity()
+    GraphicsImageItem.__init__(self)
+    GenericEntityGraphicsItem.__init__(self, entity, entity_class)
   
   def update_from_entity(self):
     image = self.renderer.render_entity_sprite_frame(self.entity)
     self.set_image(image)
     
-    if self.entity_class == "tile_entity":
-      self.setPos(self.entity.x_pos*16+8, self.entity.y_pos*16+8)
-    else:
-      self.setPos(self.entity.x_pos, self.entity.y_pos)
+    self.setPos(self.entity.x_pos, self.entity.y_pos)
 
-class EntityRectItem(QGraphicsRectItem):
+class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
   ENTITY_BRUSH = QBrush(QColor(200, 0, 200, 150))
   TILE_ENTITY_BRUSH = QBrush(QColor(0, 0, 200, 150))
   EXIT_BRUSH = QBrush(QColor(200, 200, 200, 150))
   ENEMY_BRUSH = QBrush(QColor(200, 0, 0, 150))
   
   def __init__(self, entity, entity_class):
-    super().__init__(-8, -8, 16, 16)
-    
-    self.entity = entity
-    self.entity_class = entity_class
-    
-    self.setFlag(QGraphicsItem.ItemIsMovable)
-    #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-    self.setFlag(QGraphicsItem.ItemIsSelectable)
-    
-    self.setCursor(QCursor(Qt.SizeAllCursor))
-    
-    self.update_from_entity()
+    QGraphicsRectItem.__init__(self, -8, -8, 16, 16)
+    GenericEntityGraphicsItem.__init__(self, entity, entity_class)
   
   def update_from_entity(self):
     if self.entity_class == "entity":
