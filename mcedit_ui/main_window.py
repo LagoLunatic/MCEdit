@@ -160,7 +160,7 @@ class MCEditorWindow(QMainWindow):
       return
     
     if not skip_loading_room:
-      self.room_index_changed(0)
+      self.room_index_changed(default_room_index)
   
   def room_index_changed(self, room_index):
     self.room_index = room_index
