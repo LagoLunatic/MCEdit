@@ -9,12 +9,46 @@ class GenericEntityGraphicsItem(QGraphicsItem):
     self.entity_class = entity_class
     
     self.setFlag(QGraphicsItem.ItemIsMovable)
-    #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+    self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
     self.setFlag(QGraphicsItem.ItemIsSelectable)
     
     self.setCursor(QCursor(Qt.SizeAllCursor))
     
     self.update_from_entity()
+  
+  def itemChange(self, change, value):
+    if change == QGraphicsItem.ItemPositionChange and self.scene():
+      new_pos = value
+      x = new_pos.x()
+      y = new_pos.y()
+      
+      if self.entity_class == "tile_entity":
+        # Lock to 16x16 grid
+        x = round(x // 16) * 16 + 8
+        y = round(y // 16) * 16 + 8
+      elif not QApplication.keyboardModifiers() & Qt.ControlModifier:
+        # Lock to 8x8 grid unless Ctrl is held down
+        x = round(x // 8) * 8
+        y = round(y // 8) * 8
+      
+      x = int(x)
+      y = int(y)
+      new_pos.setX(x)
+      new_pos.setY(y)
+      
+      if self.entity_class == "tile_entity":
+        self.entity.x_pos = x//16
+        self.entity.y_pos = y//16
+      else:
+        self.entity.x_pos = x
+        self.entity.y_pos = y
+      #self.entity.save()
+      
+      self.scene().graphics_item_moved.emit(self)
+      
+      return super().itemChange(change, new_pos)
+    
+    return super().itemChange(change, value)
 
 class GraphicsImageItem(QGraphicsPixmapItem):
   def __init__(self, pil_image=None):

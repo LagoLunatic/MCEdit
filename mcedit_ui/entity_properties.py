@@ -91,7 +91,7 @@ class EntityProperties(QWidget):
   def select_entity_graphics_item(self, entity_graphics_item):
     if entity_graphics_item is None:
       self.entity_label.setText("(No entity selected.)")
-      self.entity_model.entity = None
+      self.entity_model.set_entity(None)
       self.properties_tree.hide()
       return
     
@@ -161,21 +161,49 @@ class EntityModel(QAbstractItemModel):
   def __init__(self, parent=None):
     super().__init__(parent)
     
-    self.entity = None
-    self.entity_class = None
+    self.scene_graphics_item_moved_signal_connected = False
+    
+    self.set_entity(None)
   
   def set_entity(self, entity_graphics_item):
+    if entity_graphics_item is None:
+      self.entity_graphics_item = None
+      self.entity = None
+      self.entity_class = None
+      self.properties = []
+      return
+    
+    if not self.scene_graphics_item_moved_signal_connected:
+      # Connect the scene's signal for updating the entity's position when it's moved.
+      # This can't be connected in __init__ because we don't know what the scene is yet.
+      # So instead we do it the first time an entity is selected.
+      entity_graphics_item.scene().graphics_item_moved.connect(self.entity_moved)
+    
     self.entity_graphics_item = entity_graphics_item
     self.entity = entity_graphics_item.entity
     self.entity_class = entity_graphics_item.entity_class
     
     self.properties = ENTITY_PROPERTIES_BY_CLASS[self.entity_class]
   
-  def columnCount(self, parent):
+  def entity_moved(self, graphics_item_moved):
+    if graphics_item_moved == self.entity_graphics_item:
+      x_and_y_pos_row_indexes = [
+        i for i, prop in enumerate(self.properties)
+        if prop.pretty_name in ["X Pos", "Y Pos"]
+      ]
+      
+      first_row_index = min(x_and_y_pos_row_indexes)
+      last_row_index = max(x_and_y_pos_row_indexes)
+      top_left_model_index = self.index(first_row_index, 1)
+      bottom_right_model_index = self.index(last_row_index, 1)
+      
+      self.dataChanged.emit(top_left_model_index, bottom_right_model_index)
+  
+  def columnCount(self, parent=QModelIndex()):
     # Property name, property value
     return 2
   
-  def rowCount(self, parent):
+  def rowCount(self, parent=QModelIndex()):
     if parent.isValid():
       # The properties don't have any children of their own.
       return 0
@@ -219,7 +247,7 @@ class EntityModel(QAbstractItemModel):
     
     return self.properties[row]
   
-  def index(self, row, column, parent):
+  def index(self, row, column, parent=QModelIndex()):
     if self.hasIndex(row, column, parent):
       return self.createIndex(row, column)
     else:

@@ -9,6 +9,7 @@ class ClickableGraphicsScene(QGraphicsScene):
   clicked = Signal(int, int, object)
   moved = Signal(int, int, object)
   released = Signal(int, int, object)
+  graphics_item_moved = Signal(object)
   
   def __init__(self):
     super().__init__()
