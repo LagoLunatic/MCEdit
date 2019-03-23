@@ -43,6 +43,11 @@ class MCEditorWindow(QMainWindow):
     
     self.open_dialogs = []
     
+    self.area_index = None
+    self.room_index = None
+    self.area = None
+    self.room = None
+    
     self.ui.scrollArea.setFrameShape(QFrame.NoFrame)
     
     self.room_graphics_scene = ClickableGraphicsScene()
