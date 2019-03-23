@@ -175,7 +175,6 @@ class MCEditorWindow(QMainWindow):
       self.room = self.area.rooms[room_index]
     else:
       self.room = None
-      self.room_bg_palettes = None
     
     self.load_room()
     
@@ -199,15 +198,15 @@ class MCEditorWindow(QMainWindow):
     
     self.update_selected_room_on_map()
     
-    if self.room is None:
-      return
-    
     try:
-      self.load_room_tilesets()
+      self.renderer.update_curr_room_palettes_and_tilesets(self.room)
     except Exception as e:
       stack_trace = traceback.format_exc()
       error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
       print(error_message)
+    
+    if self.room is None:
+      return
     
     try:
       self.load_room_layers()
@@ -227,25 +226,6 @@ class MCEditorWindow(QMainWindow):
     
     self.update_visible_view_items()
   
-  def load_room_tilesets(self):
-    if self.room.layers_asset_list is None:
-      gfx_index = 0
-    else:
-      gfx_index = self.room.gfx_index
-    self.room_bg_palettes = self.renderer.generate_palettes_for_area_by_gfx_index(self.area, gfx_index)
-    
-    self.room_tileset_images = [None]*2
-    if self.area.uses_256_color_bg1s:
-      return
-    for layer_index in range(2):
-      try:
-        tileset_image = self.renderer.render_tileset(self.area, self.room.gfx_index, self.room_bg_palettes, layer_index)
-        self.room_tileset_images[layer_index] = tileset_image
-      except Exception as e:
-        stack_trace = traceback.format_exc()
-        error_message = "Error rendering tileset:\n" + str(e) + "\n\n" + stack_trace
-        print(error_message)
-  
   def load_room_layers(self):
     self.layer_bg2_view_item = LayerItem(self.room, 0, self.renderer)
     self.room_graphics_scene.addItem(self.layer_bg2_view_item)
@@ -253,7 +233,7 @@ class MCEditorWindow(QMainWindow):
     self.room_graphics_scene.addItem(self.layer_bg1_view_item)
   
   def load_room_entities(self):
-    self.entities_view_item = EntityLayerItem(self.room.entity_lists, self.renderer, self.room_bg_palettes, self.room_tileset_images)
+    self.entities_view_item = EntityLayerItem(self.room.entity_lists, self.renderer)
     self.room_graphics_scene.addItem(self.entities_view_item)
     
     i = 0

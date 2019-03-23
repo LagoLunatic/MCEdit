@@ -8,13 +8,11 @@ import traceback
 from mcedit_ui.custom_graphics_items import *
 
 class EntityLayerItem(QGraphicsRectItem):
-  def __init__(self, entity_lists, renderer, room_bg_palettes, room_tileset_images):
+  def __init__(self, entity_lists, renderer):
     super().__init__()
     
     self.entity_lists = entity_lists
     self.renderer = renderer
-    self.room_bg_palettes = room_bg_palettes
-    self.room_tileset_images = room_tileset_images
     
     self.entity_graphics_items_by_entity_list = []
     z_value = 9999
@@ -33,7 +31,7 @@ class EntityLayerItem(QGraphicsRectItem):
     try:
       image = None
       if entity.type in [3, 4, 6, 7]:
-        image = self.renderer.render_entity_sprite_frame(entity, self.room_bg_palettes, self.room_tileset_images)
+        image = self.renderer.render_entity_sprite_frame(entity)
       
       if image is None:
         entity_item = EntityRectItem(entity, "entity")
