@@ -1,0 +1,3 @@
+[submodule "mclib"]
+	path = mclib
+	url = ../mclib
