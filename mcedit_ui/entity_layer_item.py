@@ -29,16 +29,8 @@ class EntityLayerItem(QGraphicsRectItem):
   
   def add_graphics_item_for_entity(self, entity):
     try:
-      image = None
-      if entity.type in [3, 4, 6, 7]:
-        image = self.renderer.render_entity_sprite_frame(entity)
-      
-      if image is None:
-        entity_item = EntityRectItem(entity, "entity")
-        entity_item.setParentItem(self)
-      else:
-        entity_item = EntityImageItem(image, entity, "entity")
-        entity_item.setParentItem(self)
+      entity_item = EntityImageItem(entity, "entity", self.renderer)
+      entity_item.setParentItem(self)
     except Exception as e:
       stack_trace = traceback.format_exc()
       error_message = "Error rendering entity sprite in room %02X-%02X:\n" % (entity.room.area.area_index, entity.room.room_index)

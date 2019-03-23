@@ -6,6 +6,7 @@ from PySide2.QtWidgets import *
 from mclib.docs import Docs
 
 from collections import namedtuple
+import string
 
 Property = namedtuple(
   "Property",
@@ -96,12 +97,11 @@ class EntityProperties(QWidget):
     
     self.properties_tree.show()
     
-    entity_class = entity_graphics_item.entity_class
-    
-    self.entity_model.set_entity(entity_graphics_item.entity, entity_graphics_item.entity_class)
+    self.entity_model.set_entity(entity_graphics_item)
     
     self.entity_model.layoutChanged.emit()
     
+    entity_class = entity_graphics_item.entity_class
     if entity_class == "entity":
       self.entity_label.setText("Entity properties:")
     elif entity_class == "tile_entity":
@@ -137,6 +137,25 @@ class CustomItemDelegate(QItemDelegate):
       editor.setCurrentIndex(value_index)
     else:
       editor.setText(index.data())
+  
+  def setModelData(self, editor, model, index):
+    prop = index.model().get_property_by_row(index.row())
+    if prop.attribute_name in ["type", "subtype", "form"]:
+      value = editor.currentIndex()
+    else:
+      value = editor.text()
+      if not all(char in string.hexdigits for char in value):
+        return
+      value = int(value, 16)
+    
+    max_val = (2 << prop.num_bits) - 1
+    if value > max_val:
+      value = max_val
+    if value < 0:
+      value = 0
+    
+    model.entity.__dict__[prop.attribute_name] = value
+    model.entity_graphics_item.update_from_entity()
 
 class EntityModel(QAbstractItemModel):
   def __init__(self, parent=None):
@@ -145,9 +164,10 @@ class EntityModel(QAbstractItemModel):
     self.entity = None
     self.entity_class = None
   
-  def set_entity(self, entity, entity_class):
-    self.entity = entity
-    self.entity_class = entity_class
+  def set_entity(self, entity_graphics_item):
+    self.entity_graphics_item = entity_graphics_item
+    self.entity = entity_graphics_item.entity
+    self.entity_class = entity_graphics_item.entity_class
     
     self.properties = ENTITY_PROPERTIES_BY_CLASS[self.entity_class]
   
