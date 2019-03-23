@@ -423,7 +423,8 @@ class MCEditorWindow(QMainWindow):
     for entity_graphics_item in self.entities_view_item.childItems():
       if entity_graphics_item.entity == entity:
         self.select_entity_graphics_item(entity_graphics_item)
-  
+    
+    self.ui.room_graphics_view.centerOn(entity.x_pos, entity.y_pos)
   
   def close_open_dialogs(self):
     for dialog in self.open_dialogs:
