@@ -15,7 +15,6 @@ class EntityLayerItem(QGraphicsRectItem):
     self.renderer = renderer
     
     self.entity_graphics_items_by_entity_list = []
-    z_value = 9999
     for entity_list in self.entity_lists:
       graphics_items_for_list = []
       self.entity_graphics_items_by_entity_list.append((entity_list, graphics_items_for_list))
@@ -23,9 +22,6 @@ class EntityLayerItem(QGraphicsRectItem):
       for entity in entity_list.entities:
         entity_item = self.add_graphics_item_for_entity(entity)
         graphics_items_for_list.append(entity_item)
-        
-        entity_item.setZValue(z_value)
-        z_value -= 1
   
   def add_graphics_item_for_entity(self, entity):
     try:

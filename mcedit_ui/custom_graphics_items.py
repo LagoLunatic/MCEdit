@@ -15,6 +15,8 @@ class GenericEntityGraphicsItem(QGraphicsItem):
     self.setCursor(QCursor(Qt.SizeAllCursor))
     
     self.update_from_entity()
+    
+    self.setZValue(self.pos().y())
   
   def itemChange(self, change, value):
     if change == QGraphicsItem.ItemPositionChange and self.scene():
@@ -35,6 +37,8 @@ class GenericEntityGraphicsItem(QGraphicsItem):
       y = int(y)
       new_pos.setX(x)
       new_pos.setY(y)
+      
+      self.setZValue(y)
       
       if self.entity_class == "tile_entity":
         self.entity.x_pos = x//16
