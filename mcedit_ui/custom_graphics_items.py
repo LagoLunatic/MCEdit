@@ -60,22 +60,23 @@ class GraphicsImageItem(QGraphicsPixmapItem):
     
     self.set_image(pil_image)
   
-  def set_image(self, pil_image):
+  def set_image(self, pil_image, x_off=0, y_off=0):
     if pil_image is None:
       width = 16
       height = 16
       pixmap = QPixmap(width, height)
       pixmap.fill(QColor(200, 0, 200, 150))
       self.setPixmap(pixmap)
+      
+      self.setOffset(-width//2, -height//2)
     else:
       width, height = pil_image.size
-      
       data = pil_image.tobytes('raw', 'BGRA')
       qimage = QImage(data, width, height, QImage.Format_ARGB32)
       pixmap = QPixmap.fromImage(qimage)
       self.setPixmap(pixmap)
-    
-    self.setOffset(-width//2, -height//2)
+      
+      self.setOffset(x_off, y_off)
   
   def boundingRect(self):
     # If the sprite is smaller than 16x16, make sure the bounding rectangle is at least 16x16.
@@ -119,8 +120,8 @@ class EntityImageItem(GraphicsImageItem, GenericEntityGraphicsItem):
     GenericEntityGraphicsItem.__init__(self, entity, entity_class)
   
   def update_from_entity(self):
-    image = self.renderer.render_entity_sprite_frame(self.entity)
-    self.set_image(image)
+    image, x_off, y_off = self.renderer.render_entity_sprite_frame(self.entity)
+    self.set_image(image, x_off, y_off)
     
     self.setPos(self.entity.x_pos, self.entity.y_pos)
 
