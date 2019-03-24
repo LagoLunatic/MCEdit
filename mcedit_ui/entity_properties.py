@@ -119,7 +119,7 @@ class CustomItemDelegate(QItemDelegate):
     entity = model.entity
     prop = model.get_property_by_row(index.row())
     
-    if prop.attribute_name in ["type", "subtype", "form"]:
+    if prop.attribute_name in ["type", "subtype", "form", "item_id"]:
       editor = QComboBox(parent)
       
       num_possible_values = 2**prop.num_bits
@@ -132,7 +132,7 @@ class CustomItemDelegate(QItemDelegate):
   
   def setEditorData(self, editor, index):
     prop = index.model().get_property_by_row(index.row())
-    if prop.attribute_name in ["type", "subtype", "form"]:
+    if prop.attribute_name in ["type", "subtype", "form", "item_id"]:
       value_index = editor.findText(index.data())
       editor.setCurrentIndex(value_index)
     else:
@@ -140,7 +140,7 @@ class CustomItemDelegate(QItemDelegate):
   
   def setModelData(self, editor, model, index):
     prop = index.model().get_property_by_row(index.row())
-    if prop.attribute_name in ["type", "subtype", "form"]:
+    if prop.attribute_name in ["type", "subtype", "form", "item_id"]:
       value = editor.currentIndex()
     else:
       value = editor.text()
