@@ -167,22 +167,52 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
     self.setBrush(self.EXIT_BRUSH)
     
     if ext.transition_type == 0:
-      if ext.unknown_1 & 0x03 != 0:
-        # Upwards screen edge transition
-        self.setPos(0, 0 - ((ext.unknown_1 & 0x03) >> 0)*0x10)
-        self.setRect(0, 0, room.width, 16)
-      elif ext.unknown_1 & 0x0C != 0:
-        # Rightwards screen edge transition
-        self.setPos(room.width - 0x10 + ((ext.unknown_1 & 0x0C) >> 2)*0x10, 0)
-        self.setRect(0, 0, 16, room.height)
-      elif ext.unknown_1 & 0x30 != 0:
-        # Downwards screen edge transition
-        self.setPos(0, room.height - 0x10 + ((ext.unknown_1 & 0x30) >> 4)*0x10)
-        self.setRect(0, 0, room.width, 16)
-      elif ext.unknown_1 & 0xC0 != 0:
-        # Leftwards screen edge transition
-        self.setPos(0 - ((ext.unknown_1 & 0xC0) >> 6)*0x10, 0)
-        self.setRect(0, 0, 16, room.height)
+      dir = None
+      bits = None
+      for i in range(4):
+        bit_shift = i*2
+        bit_mask = (3 << bit_shift)
+        if (ext.screen_edge & bit_mask) != 0:
+          dir = i
+          bits = (ext.screen_edge & bit_mask) >> bit_shift
+          break
+      
+      if dir in [0, 2]:
+        if dir == 0:
+          # Up
+          y = -16
+        elif dir == 2:
+          # Down
+          y = room.height
+        
+        x = 0
+        w = room.width
+        
+        if bits == 1:
+          w //= 2
+        elif bits == 2:
+          w //= 2
+          x += w
+        
+        self.setRect(x, y, w, 16)
+      elif dir in [1, 3]:
+        if dir == 1:
+          # Right
+          x = room.width
+        elif dir == 3:
+          # Left
+          x = -16
+        
+        y = 0
+        h = room.height
+        
+        if bits == 1:
+          h //= 2
+        elif bits == 2:
+          h //= 2
+          y += h
+        
+        self.setRect(x, y, 16, h)
   
   def init_exit_region(self):
     self.setBrush(self.EXIT_BRUSH)
