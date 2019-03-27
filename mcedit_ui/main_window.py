@@ -189,7 +189,13 @@ class MCEditorWindow(QMainWindow):
   
   def change_area_and_room_by_exit(self, ext):
     self.change_area_and_room(ext.dest_area, ext.dest_room)
-    self.ui.room_graphics_view.centerOn(ext.dest_x, ext.dest_y)
+    dest_x = ext.dest_x
+    dest_y = ext.dest_y
+    if dest_x >= 0x400:
+      dest_x = self.room.width/2
+    if dest_y >= 0x400:
+      dest_y = self.room.height/2
+    self.ui.room_graphics_view.centerOn(dest_x, dest_y)
   
   def go_to_room_and_select_entity(self, entity):
     if entity.room.area.area_index != self.area.area_index or entity.room.room_index != self.room.room_index:
