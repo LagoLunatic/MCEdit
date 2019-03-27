@@ -187,6 +187,10 @@ class MCEditorWindow(QMainWindow):
     
     self.room_index_changed(room_index)
   
+  def change_area_and_room_by_exit(self, ext):
+    self.change_area_and_room(ext.dest_area, ext.dest_room)
+    self.ui.room_graphics_view.centerOn(ext.dest_x, ext.dest_y)
+  
   def go_to_room_and_select_entity(self, entity):
     if entity.room.area.area_index != self.area.area_index or entity.room.room_index != self.room.room_index:
       self.change_area_and_room(entity.room.area.area_index, entity.room.room_index)
@@ -280,10 +284,10 @@ class MCEditorWindow(QMainWindow):
         self.select_entity_graphics_item(graphics_item)
       elif button == Qt.RightButton and graphics_item.entity_class == "exit":
         # Go through the exit into the destination room.
-        self.change_area_and_room(graphics_item.entity.dest_area, graphics_item.entity.dest_room)
+        self.change_area_and_room_by_exit(graphics_item.entity)
       elif button == Qt.RightButton and graphics_item.entity_class == "exit_region":
         # Go through the exit into the destination room.
-        self.change_area_and_room(graphics_item.entity.exit.dest_area, graphics_item.entity.exit.dest_room)
+        self.change_area_and_room_by_exit(graphics_item.entity.exit)
     else:
       self.select_entity_graphics_item(None)
   
