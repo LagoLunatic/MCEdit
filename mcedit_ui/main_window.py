@@ -415,11 +415,14 @@ class MCEditorWindow(QMainWindow):
     self.ui.entity_properies.select_entity_graphics_item(entity_graphics_item)
   
   def select_entity(self, entity):
-    for entity_graphics_item in self.entities_view_item.childItems():
-      if entity_graphics_item.entity == entity:
-        self.select_entity_graphics_item(entity_graphics_item)
-    
-    self.ui.room_graphics_view.centerOn(entity.x_pos, entity.y_pos)
+    entity_graphics_item = next((
+      egi for egi in self.entities_view_item.childItems()
+      if egi.entity == entity
+    ), None)
+    if entity_graphics_item is None:
+      return
+    self.select_entity_graphics_item(entity_graphics_item)
+    self.ui.room_graphics_view.centerOn(entity_graphics_item)
   
   def close_open_dialogs(self):
     for dialog in self.open_dialogs:
