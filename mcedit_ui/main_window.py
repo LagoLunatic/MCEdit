@@ -198,6 +198,8 @@ class MCEditorWindow(QMainWindow):
     
     self.update_selected_room_on_map()
     
+    self.center_room_view()
+    
     try:
       self.renderer.update_curr_room_palettes_and_tilesets(self.room)
     except Exception as e:
@@ -222,7 +224,7 @@ class MCEditorWindow(QMainWindow):
       error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
       print(error_message)
     
-    self.room_graphics_scene.setSceneRect(self.room_graphics_scene.itemsBoundingRect())
+    self.ui.room_graphics_view.updateSceneRect(self.room_graphics_scene.itemsBoundingRect())
     
     self.update_visible_view_items()
   
@@ -262,6 +264,10 @@ class MCEditorWindow(QMainWindow):
         entity_item.setParentItem(self.exits_view_item)
     
     self.select_entity_graphics_item(None)
+  
+  def center_room_view(self):
+    if self.room is not None:
+      self.ui.room_graphics_view.centerOn(self.room.width/2, self.room.height/2)
   
   def room_clicked(self, x, y, button):
     graphics_item = self.room_graphics_scene.itemAt(x, y)

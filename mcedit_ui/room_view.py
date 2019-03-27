@@ -23,6 +23,24 @@ class RoomView(QGraphicsView):
     self.curr_zoom_index = self.ZOOM_SCALES.index(1.0)
     
     self.setMouseTracking(True)
+    self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+  
+  def updateSceneRect(self, scene_rect, transform=QTransform()):
+    max_size = self.maximumViewportSize()
+    margin_w = max_size.width() * 0.9
+    margin_h = max_size.height() * 0.9
+    
+    view_rect = transform.mapRect(scene_rect)
+    view_rect.adjust(-margin_w, -margin_h, margin_w, margin_h)
+    inverted_transform, _ = transform.inverted()
+    expanded_scene_rect = inverted_transform.mapRect(view_rect)
+    
+    self.scene().setSceneRect(expanded_scene_rect)
+    self.setSceneRect(expanded_scene_rect)
+  
+  def reset_zoom(self):
+    self.resetTransform()
+    self.curr_zoom_index = self.ZOOM_SCALES.index(1.0)
   
   def keyPressEvent(self, event):
     if event.key() == Qt.Key_Space and not event.isAutoRepeat():
@@ -31,6 +49,9 @@ class RoomView(QGraphicsView):
   def keyReleaseEvent(self, event):
     if event.key() == Qt.Key_Space and not event.isAutoRepeat():
       self.set_panning(False)
+  
+  def resizeEvent(self, event):
+    self.window().center_room_view()
   
   def set_panning(self, is_panning):
     if is_panning == self.is_panning:
@@ -43,9 +64,7 @@ class RoomView(QGraphicsView):
     if is_panning:
       self.orig_mouse_pos = QCursor.pos()
       QApplication.setOverrideCursor(QCursor(Qt.ClosedHandCursor))
-      #viewport.grabMouse()
     else:
-      #viewport.releaseMouse()
       QApplication.restoreOverrideCursor()
   
   def mouseMoveEvent(self, event):
@@ -79,10 +98,15 @@ class RoomView(QGraphicsView):
   
   def wheelEvent(self, event):
     if not QApplication.keyboardModifiers() & Qt.ControlModifier:
+      super().wheelEvent(event)
       return
+    
+    orig_view_pos = event.pos()
+    orig_scene_pos = self.mapToScene(orig_view_pos)
     
     y_change = event.angleDelta().y()
     
+    old_zoom_scale = self.ZOOM_SCALES[self.curr_zoom_index]
     if y_change > 0:
       if self.curr_zoom_index == len(self.ZOOM_SCALES) - 1:
         return
@@ -95,5 +119,8 @@ class RoomView(QGraphicsView):
       return
     
     curr_zoom_scale = self.ZOOM_SCALES[self.curr_zoom_index]
-    self.resetTransform()
-    self.scale(curr_zoom_scale, curr_zoom_scale)
+    scale_mult = curr_zoom_scale / old_zoom_scale
+    
+    self.scale(scale_mult, scale_mult)
+    
+    self.updateSceneRect(self.scene().sceneRect())
