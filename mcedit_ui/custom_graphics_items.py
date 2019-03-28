@@ -194,7 +194,8 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
           w //= 2
           x += w
         
-        self.setRect(x, y, w, 16)
+        self.setPos(x, y)
+        self.setRect(0, 0, w, 16)
       elif dir in [1, 3]:
         if dir == 1:
           # Right
@@ -212,7 +213,8 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
           h //= 2
           y += h
         
-        self.setRect(x, y, 16, h)
+        self.setPos(x, y)
+        self.setRect(0, 0, 16, h)
   
   def init_exit_region(self):
     self.setBrush(self.EXIT_BRUSH)
