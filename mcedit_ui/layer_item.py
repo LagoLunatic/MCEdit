@@ -20,46 +20,62 @@ class LayerItem(QGraphicsRectItem):
       self.render_layer()
     except Exception as e:
       stack_trace = traceback.format_exc()
-      error_message = "Error rendering layer:\n" + str(e) + "\n\n" + stack_trace
+      error_message = "Error rendering layer in room %02X-%02X:\n" % (room.area.area_index, room.room_index)
+      error_message += str(e) + "\n\n" + stack_trace
       print(error_message)
   
   def render_layer(self):
     room = self.room
+    area = room.area
     layer_index = self.layer_index
     
     if room.area.uses_256_color_bg1s:
-      if layer_index == 1:
-        self.render_layer_256_color()
+      if layer_index == 2:
+        self.render_layer_mapped(color_mode=256)
       else:
-        # Their BG2s may be unused? They seem to error out when trying to render them. TODO figure them out
+        # Their BG1s may be unused? They seem to error out when trying to render them. TODO figure them out
         pass
     else:
-      self.render_layer_16_color()
+      if layer_index == 3:
+        self.render_layer_mapped(color_mode=16)
+      elif room.layers_asset_list.tile_mappings_8x8[layer_index] is not None:
+        self.render_layer_mapped(color_mode=16)
+      else:
+        self.render_layer_16_color()
   
   def render_layer_16_color(self):
     room = self.room
+    area = room.area
     layer_index = self.layer_index
     
-    orig_gfx_data = room.area.get_gfx_asset_list(room.gfx_index).gfx_data
-    if layer_index >= 1:
+    gfx_asset_list = area.get_gfx_asset_list(room.gfx_index)
+    orig_gfx_data = gfx_asset_list.gfx_data
+    if layer_index in [1, 3]:
       self.gfx_data = orig_gfx_data.read_raw(0x4000, len(orig_gfx_data)-0x4000)
     else:
       self.gfx_data = orig_gfx_data
     self.palettes = self.renderer.generate_palettes_for_area_by_gfx_index(room.area, room.gfx_index)
-    self.tile_mapping_8x8_data = room.area.tilesets_asset_list.tile_mappings[layer_index]
+    self.tileset_data = room.area.tilesets_asset_list.tileset_datas[layer_index]
+    if self.tileset_data is None:
+      return
     
-    tile_mapping_16x16_data = room.layers_asset_list.tile_mappings[layer_index]
-    if tile_mapping_16x16_data is None:
-      raise Exception("Layer BG%d has no 16x16 tile mapping" % (layer_index+1))
+    layer_data = room.layers_asset_list.layer_datas[layer_index]
+    if layer_data is None:
+      raise Exception("Layer BG%d has no layer data" % layer_index)
+    if len(layer_data) == 0:
+      raise Exception("Layer BG%d has zero-length layer data" % layer_index)
+    if layer_data.read_u16(0) == 0xFFFF:
+      # No real layer data here
+      return
     
     self.cached_8x8_tile_images_by_tile_attrs_and_zone_ids = {}
     
     room_width_in_16x16_tiles = room.width//16
     
     cached_tile_pixmaps_by_16x16_index = {}
-    for i in range(len(tile_mapping_16x16_data)//2):
-      tile_map_16x16_offset = i*2
-      tile_index_16x16 = tile_mapping_16x16_data.read_u16(tile_map_16x16_offset)
+    for i in range(len(layer_data)//2):
+      layer_data_offset = i*2
+      tile_index_16x16 = layer_data.read_u16(layer_data_offset)
       
       x = (i % room_width_in_16x16_tiles)*16
       y = (i // room_width_in_16x16_tiles)*16
@@ -94,7 +110,7 @@ class LayerItem(QGraphicsRectItem):
           palettes = self.renderer.generate_palettes_from_palette_group_by_index(zone_data.palette_group_index)
         
         for zone_gfx_data_ptr, zone_gfx_load_offset in zone_data.gfx_load_datas:
-          if layer_index >= 1:
+          if layer_index in [1, 3]:
             zone_gfx_load_offset -= 0x4000
             if zone_gfx_load_offset < 0:
               continue
@@ -113,7 +129,7 @@ class LayerItem(QGraphicsRectItem):
     
     try:
       for tile_8x8_i in range(4):
-        tile_attrs = self.tile_mapping_8x8_data.read_u16(tile_index_16x16*8 + tile_8x8_i*2)
+        tile_attrs = self.tileset_data.read_u16(tile_index_16x16*8 + tile_8x8_i*2)
         
         horizontal_flip = (tile_attrs & 0x0400) > 0
         vertical_flip   = (tile_attrs & 0x0800) > 0
@@ -151,13 +167,13 @@ class LayerItem(QGraphicsRectItem):
     
     return tile_pixmap
   
-  def render_layer_256_color(self):
+  def render_layer_mapped(self, color_mode=256):
     room = self.room
     layer_index = self.layer_index
     
     palettes = self.renderer.generate_palettes_for_area_by_gfx_index(room.area, room.gfx_index)
     
-    layer_image = self.renderer.render_layer_256_color(self.room, palettes, layer_index)
+    layer_image = self.renderer.render_layer_mapped(self.room, palettes, layer_index, color_mode=color_mode)
     
     data = layer_image.tobytes('raw', 'BGRA')
     qimage = QImage(data, layer_image.size[0], layer_image.size[1], QImage.Format_ARGB32)

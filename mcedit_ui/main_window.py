@@ -239,7 +239,9 @@ class MCEditorWindow(QMainWindow):
     self.update_visible_view_items()
   
   def load_room_layers(self):
-    self.layer_bg2_view_item = LayerItem(self.room, 0, self.renderer)
+    self.layer_bg3_view_item = LayerItem(self.room, 3, self.renderer)
+    self.room_graphics_scene.addItem(self.layer_bg3_view_item)
+    self.layer_bg2_view_item = LayerItem(self.room, 2, self.renderer)
     self.room_graphics_scene.addItem(self.layer_bg2_view_item)
     self.layer_bg1_view_item = LayerItem(self.room, 1, self.renderer)
     self.room_graphics_scene.addItem(self.layer_bg1_view_item)
