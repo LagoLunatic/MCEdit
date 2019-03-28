@@ -3,6 +3,8 @@ from PySide2.QtGui import *
 from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 
+import traceback
+
 class GenericEntityGraphicsItem(QGraphicsItem):
   def __init__(self, entity, entity_class):
     self.entity = entity
@@ -120,7 +122,23 @@ class EntityImageItem(GraphicsImageItem, GenericEntityGraphicsItem):
     GenericEntityGraphicsItem.__init__(self, entity, entity_class)
   
   def update_from_entity(self):
-    image, x_off, y_off = self.renderer.render_entity_sprite_frame(self.entity)
+    try:
+      image, x_off, y_off = self.renderer.render_entity_sprite_frame(self.entity)
+    except Exception as e:
+      stack_trace = traceback.format_exc()
+      error_message = "Error rendering entity sprite in room %02X-%02X:\n" % (
+        self.entity.room.area.area_index, self.entity.room.room_index
+      )
+      error_message += str(e) + "\n\n" + stack_trace
+      error_log_file_name = "./logs/entity render errors/entity render error %02X-%02X-%02X.txt" % (
+        self.entity.type, self.entity.subtype, self.entity.form
+      )
+      with open(error_log_file_name, "w") as f:
+        f.write(error_message)
+      #print(error_message)
+      
+      image, x_off, y_off = (None, None, None)
+    
     self.set_image(image, x_off, y_off)
     
     self.setPos(self.entity.x_pos, self.entity.y_pos)

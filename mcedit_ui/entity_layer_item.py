@@ -3,8 +3,6 @@ from PySide2.QtGui import *
 from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 
-import traceback
-
 from mcedit_ui.custom_graphics_items import *
 
 class EntityLayerItem(QGraphicsRectItem):
@@ -24,19 +22,9 @@ class EntityLayerItem(QGraphicsRectItem):
         graphics_items_for_list.append(entity_item)
   
   def add_graphics_item_for_entity(self, entity):
-    try:
-      if entity.type in [3, 4, 6, 7]:
-        entity_item = EntityImageItem(entity, "entity", self.renderer)
-      else:
-        entity_item = EntityRectItem(entity, "entity")
-    except Exception as e:
-      stack_trace = traceback.format_exc()
-      error_message = "Error rendering entity sprite in room %02X-%02X:\n" % (entity.room.area.area_index, entity.room.room_index)
-      error_message += str(e) + "\n\n" + stack_trace
-      with open("./logs/entity render errors/entity render error %02X-%02X-%02X.txt" % (entity.type, entity.subtype, entity.form), "w") as f:
-        f.write(error_message)
-      #print(error_message)
-      
+    if entity.type in [3, 4, 6, 7]:
+      entity_item = EntityImageItem(entity, "entity", self.renderer)
+    else:
       entity_item = EntityRectItem(entity, "entity")
     
     entity_item.setParentItem(self)
