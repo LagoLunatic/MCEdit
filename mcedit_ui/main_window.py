@@ -63,6 +63,7 @@ class MCEditorWindow(QMainWindow):
     
     self.ui.actionLayer_BG1.triggered.connect(self.update_visible_view_items)
     self.ui.actionLayer_BG2.triggered.connect(self.update_visible_view_items)
+    self.ui.actionLayer_BG3.triggered.connect(self.update_visible_view_items)
     self.ui.actionEntities.triggered.connect(self.update_visible_view_items)
     self.ui.actionTile_Entities.triggered.connect(self.update_visible_view_items)
     self.ui.actionExits.triggered.connect(self.update_visible_view_items)
@@ -402,6 +403,7 @@ class MCEditorWindow(QMainWindow):
   def update_visible_view_items(self):
     self.layer_bg1_view_item.setVisible(self.ui.actionLayer_BG1.isChecked())
     self.layer_bg2_view_item.setVisible(self.ui.actionLayer_BG2.isChecked())
+    self.layer_bg3_view_item.setVisible(self.ui.actionLayer_BG3.isChecked())
     self.entities_view_item.setVisible(self.ui.actionEntities.isChecked())
     self.tile_entities_view_item.setVisible(self.ui.actionTile_Entities.isChecked())
     self.exits_view_item.setVisible(self.ui.actionExits.isChecked())

@@ -159,6 +159,7 @@
     </property>
     <addaction name="actionLayer_BG1"/>
     <addaction name="actionLayer_BG2"/>
+    <addaction name="actionLayer_BG3"/>
     <addaction name="actionEntities"/>
     <addaction name="actionTile_Entities"/>
     <addaction name="actionExits"/>
@@ -240,6 +241,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionLayer_BG3">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Layer BG3</string>
    </property>
   </action>
  </widget>
