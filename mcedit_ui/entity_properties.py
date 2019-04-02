@@ -49,7 +49,7 @@ ENTITY_PROPERTIES_BY_CLASS = {
     Property("Y Pos", "y_pos", 16),
     Property("Dest X", "dest_x", 16),
     Property("Dest Y", "dest_y", 16),
-    Property("Unknown 1", "unknown_1", 8),
+    Property("Screen Edge", "screen_edge", 8),
     Property("Dest Area", "dest_area", 8),
     Property("Dest Room", "dest_room", 8),
     Property("Unknown 2", "unknown_2", 8),
