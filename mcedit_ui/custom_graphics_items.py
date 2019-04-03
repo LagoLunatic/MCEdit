@@ -184,7 +184,13 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
     
     self.setBrush(self.EXIT_BRUSH)
     
+    self.setFlag(QGraphicsItem.ItemIsMovable)
     if ext.transition_type == 0:
+      # Screen edge based exit transition.
+      
+      # Should not be draggable.
+      self.setFlag(QGraphicsItem.ItemIsMovable, enabled=False)
+      
       dir = None
       bits = None
       for i in range(4):
@@ -194,6 +200,7 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
           dir = i
           bits = (ext.screen_edge & bit_mask) >> bit_shift
           break
+      # TODO: what to do when more than one direction is set?
       
       if dir in [0, 2]:
         if dir == 0:
@@ -233,6 +240,10 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
         
         self.setPos(x, y)
         self.setRect(0, 0, 16, h)
+      else:
+        # No direction bits are set.
+        # TODO: How to represent this invalid state visually?
+        pass
   
   def init_exit_region(self):
     self.setBrush(self.EXIT_BRUSH)
