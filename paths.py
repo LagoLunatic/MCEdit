@@ -9,3 +9,4 @@ except ImportError:
 
 MCLIB_PATH = os.path.join(ROOT_PATH, "mclib")
 DATA_PATH = os.path.join(MCLIB_PATH, "data")
+ASM_PATH = os.path.join(ROOT_PATH, "asm")

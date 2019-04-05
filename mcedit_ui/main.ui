@@ -170,9 +170,16 @@
     </property>
     <addaction name="actionEntity_Search"/>
    </widget>
+   <widget class="QMenu" name="menuBuild">
+    <property name="title">
+     <string>Build</string>
+    </property>
+    <addaction name="actionTest_Room"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuTools"/>
+   <addaction name="menuBuild"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen_ROM">
@@ -241,6 +248,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionTest_Room">
+   <property name="text">
+    <string>Test Room</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
    </property>
   </action>
   <action name="actionLayer_BG3">

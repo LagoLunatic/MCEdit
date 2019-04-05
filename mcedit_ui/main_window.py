@@ -18,6 +18,8 @@ import os
 from collections import OrderedDict
 from PIL import Image
 import traceback
+import subprocess
+import psutil
 
 import yaml
 try:
@@ -35,6 +37,8 @@ yaml.Dumper.add_representer(
   lambda dumper, data: dumper.represent_dict(data.items())
 )
 
+from paths import DATA_PATH
+
 class MCEditorWindow(QMainWindow):
   def __init__(self):
     super().__init__()
@@ -47,6 +51,8 @@ class MCEditorWindow(QMainWindow):
     self.room_index = None
     self.area = None
     self.room = None
+    
+    self.last_emulator_process = None
     
     self.ui.scrollArea.setFrameShape(QFrame.NoFrame)
     
@@ -69,6 +75,8 @@ class MCEditorWindow(QMainWindow):
     self.ui.actionExits.triggered.connect(self.update_visible_view_items)
     
     self.ui.actionEntity_Search.triggered.connect(self.open_entity_search)
+    
+    self.ui.actionTest_Room.triggered.connect(self.test_room)
     
     self.ui.area_index.activated.connect(self.area_index_changed)
     self.ui.room_index.activated.connect(self.room_index_changed)
@@ -442,6 +450,56 @@ class MCEditorWindow(QMainWindow):
   def open_entity_search(self):
     entity_search_dialog = EntitySearchDialog(self)
     self.open_dialogs.append(entity_search_dialog)
+  
+  
+  def test_room(self):
+    # TODO: add settings window to set the emulator path
+    if self.settings.get("emulator_path") is None:
+      QMessageBox.warning(self,
+        "Emulator path not set",
+        "Must set emulator path in the settings before running test room."
+      )
+      return
+    emulator_path = self.settings["emulator_path"]
+    
+    # Kill the last running emulator process if the user didn't do it manually.
+    if self.last_emulator_process is not None:
+      if self.last_emulator_process.is_running():
+        self.last_emulator_process.kill()
+      self.last_emulator_process = None
+    
+    # Apply the test room patch and set where to load the player at.
+    scene_pos = self.ui.room_graphics_view.mapToScene(self.ui.room_graphics_view.mapFromGlobal(QCursor.pos()))
+    test_rom = self.game.rom.copy()
+    self.game.apply_patch("test_room", rom=test_rom)
+    sym = self.game.custom_symbols["test_room_data"]
+    test_rom.write_u8(sym, self.area_index)
+    test_rom.write_u8(sym+1, self.room_index)
+    test_rom.write_u16(sym+2, scene_pos.x())
+    test_rom.write_u16(sym+4, scene_pos.y())
+    
+    # Write the test ROM.
+    input_rom_path = self.settings["last_used_rom"]
+    output_dir = os.path.dirname(input_rom_path)
+    input_rom_basename, file_ext = os.path.splitext(os.path.basename(input_rom_path))
+    output_rom_basename = input_rom_basename + " Test"
+    output_rom_path = os.path.join(output_dir, output_rom_basename + ".gba")
+    output_rom_path = os.path.abspath(output_rom_path)
+    output_rom_path = output_rom_path.replace("/", "\\")
+    with open(output_rom_path, "wb") as f:
+      f.write(test_rom.read_all_bytes())
+    
+    # Copy the symbol map file to be next to the test room ROM so that No$GBA can load it.
+    input_map_path = os.path.join(DATA_PATH, "symbol_map.sym")
+    with open(input_map_path) as f:
+      symbol_map = f.read()
+    output_map_path = os.path.join(output_dir, output_rom_basename + ".sym")
+    with open(output_map_path, "w") as f:
+      f.write(symbol_map)
+    
+    # Launch the emulator.
+    popen_process = subprocess.Popen([emulator_path, output_rom_path])
+    self.last_emulator_process = psutil.Process(popen_process.pid)
   
   
   def keyPressEvent(self, event):

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Sun Mar 31 14:19:25 2019
+# Created: Fri Apr  5 16:04:15 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -94,6 +94,8 @@ class Ui_MainWindow(object):
         self.menuView.setObjectName("menuView")
         self.menuTools = QtWidgets.QMenu(self.menubar)
         self.menuTools.setObjectName("menuTools")
+        self.menuBuild = QtWidgets.QMenu(self.menubar)
+        self.menuBuild.setObjectName("menuBuild")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -122,6 +124,8 @@ class Ui_MainWindow(object):
         self.actionExits.setObjectName("actionExits")
         self.actionEntity_Search = QtWidgets.QAction(MainWindow)
         self.actionEntity_Search.setObjectName("actionEntity_Search")
+        self.actionTest_Room = QtWidgets.QAction(MainWindow)
+        self.actionTest_Room.setObjectName("actionTest_Room")
         self.actionLayer_BG3 = QtWidgets.QAction(MainWindow)
         self.actionLayer_BG3.setCheckable(True)
         self.actionLayer_BG3.setChecked(True)
@@ -134,9 +138,11 @@ class Ui_MainWindow(object):
         self.menuView.addAction(self.actionTile_Entities)
         self.menuView.addAction(self.actionExits)
         self.menuTools.addAction(self.actionEntity_Search)
+        self.menuBuild.addAction(self.actionTest_Room)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuTools.menuAction())
+        self.menubar.addAction(self.menuBuild.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -148,6 +154,7 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(QtWidgets.QApplication.translate("MainWindow", "File", None, -1))
         self.menuView.setTitle(QtWidgets.QApplication.translate("MainWindow", "View", None, -1))
         self.menuTools.setTitle(QtWidgets.QApplication.translate("MainWindow", "Tools", None, -1))
+        self.menuBuild.setTitle(QtWidgets.QApplication.translate("MainWindow", "Build", None, -1))
         self.actionOpen_ROM.setText(QtWidgets.QApplication.translate("MainWindow", "Open ROM", None, -1))
         self.actionLayer_BG1.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG1", None, -1))
         self.actionLayer_BG2.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG2", None, -1))
@@ -156,7 +163,9 @@ class Ui_MainWindow(object):
         self.actionExits.setText(QtWidgets.QApplication.translate("MainWindow", "Exits", None, -1))
         self.actionEntity_Search.setText(QtWidgets.QApplication.translate("MainWindow", "Entity Search", None, -1))
         self.actionEntity_Search.setShortcut(QtWidgets.QApplication.translate("MainWindow", "Ctrl+F", None, -1))
+        self.actionTest_Room.setText(QtWidgets.QApplication.translate("MainWindow", "Test Room", None, -1))
+        self.actionTest_Room.setShortcut(QtWidgets.QApplication.translate("MainWindow", "F7", None, -1))
         self.actionLayer_BG3.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG3", None, -1))
 
-from mcedit_ui.entity_properties import EntityProperties
 from mcedit_ui.room_view import RoomView
+from mcedit_ui.entity_properties import EntityProperties
