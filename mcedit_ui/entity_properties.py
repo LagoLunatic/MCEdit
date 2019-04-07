@@ -4,71 +4,12 @@ from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 
 from mclib.docs import Docs
+from mclib.entity import ParamEntity
 
-from collections import namedtuple
+from collections import OrderedDict
 import string
 
-Property = namedtuple(
-  "Property",
-  "pretty_name attribute_name num_bits"
-)
-ENTITY_PROPERTIES_BY_CLASS = {
-  "entity": [
-    Property("ROM Location", "entity_ptr", 32),
-    Property("Type", "type", 4),
-    Property("Unknown 1", "unknown_1", 4),
-    Property("Unknown 2", "unknown_2", 4),
-    Property("Unknown 3", "unknown_3", 4),
-    Property("Subtype", "subtype", 8),
-    Property("Form", "form", 8),
-    Property("Unknown 4", "unknown_4", 8),
-    Property("Unknown 5", "unknown_5", 8),
-    Property("Unknown 6", "unknown_6", 8),
-    Property("Unknown 7", "unknown_7", 8),
-    Property("X Pos", "x_pos", 16),
-    Property("Y Pos", "y_pos", 16),
-    Property("Params", "params", 32),
-  ],
-  
-  "tile_entity": [
-    Property("ROM Location", "entity_ptr", 32),
-    Property("Type", "type", 8),
-    Property("Unknown 1", "unknown_1", 8),
-    Property("Item ID", "item_id", 8),
-    Property("Unknown 2", "unknown_2", 8),
-    Property("X Pos", "x_pos", 6),
-    Property("Y Pos", "y_pos", 6),
-    Property("Unknown 3", "unknown_3", 4),
-    Property("Message ID", "message_id", 16),
-  ],
-  
-  "exit": [
-    Property("ROM Location", "exit_ptr", 32),
-    Property("Transition Type", "transition_type", 16),
-    Property("X Pos", "x_pos", 16),
-    Property("Y Pos", "y_pos", 16),
-    Property("Dest X", "dest_x", 16),
-    Property("Dest Y", "dest_y", 16),
-    Property("Screen Edge", "screen_edge", 8),
-    Property("Dest Area", "dest_area", 8),
-    Property("Dest Room", "dest_room", 8),
-    Property("Unknown 2", "unknown_2", 8),
-    Property("Unknown 3", "unknown_3", 8),
-    Property("Unknown 4", "unknown_4", 16),
-    Property("Padding", "padding", 16),
-  ],
-  
-  "exit_region": [
-    Property("ROM Location", "region_ptr", 32),
-    Property("Center X", "center_x", 16),
-    Property("Center Y", "center_y", 16),
-    Property("Width/2", "half_width", 8),
-    Property("Height/2", "half_height", 8),
-    Property("Which Exit", "exit_pointer_property_index", 8),
-    Property("Unknown", "unknown_bitfield", 8),
-    # TODO: how to display both the exit region AND the exit's properties at once?
-  ],
-}
+# TODO: tree widget isn't that great here after all... gotta make a fully custom thing so that comboboxes can be scrolled through easier
 
 class EntityProperties(QWidget):
   def __init__(self, parent):
@@ -154,7 +95,8 @@ class CustomItemDelegate(QItemDelegate):
     if value < 0:
       value = 0
     
-    model.entity.__dict__[prop.attribute_name] = value
+    setattr(model.entity, prop.attribute_name, value)
+    model.entity.update_params()
     model.entity_graphics_item.update_from_entity()
 
 class EntityModel(QAbstractItemModel):
@@ -170,7 +112,7 @@ class EntityModel(QAbstractItemModel):
       self.entity_graphics_item = None
       self.entity = None
       self.entity_class = None
-      self.properties = []
+      self.properties = OrderedDict()
       return
     
     if not self.scene_graphics_item_moved_signal_connected:
@@ -183,21 +125,22 @@ class EntityModel(QAbstractItemModel):
     self.entity = entity_graphics_item.entity
     self.entity_class = entity_graphics_item.entity_class
     
-    self.properties = ENTITY_PROPERTIES_BY_CLASS[self.entity_class]
+    self.properties = self.entity.properties
   
-  def entity_moved(self, graphics_item_moved):
-    if graphics_item_moved == self.entity_graphics_item:
+  def entity_moved(self, moved_graphics_item):
+    if moved_graphics_item == self.entity_graphics_item:
       x_and_y_pos_row_indexes = [
-        i for i, prop in enumerate(self.properties)
-        if prop.pretty_name in ["X Pos", "Y Pos"]
+        i for i, prop in enumerate(self.properties.values())
+        if prop.pretty_name in ["X Pos", "Y Pos", "Tile X", "Tile Y"]
       ]
       
-      first_row_index = min(x_and_y_pos_row_indexes)
-      last_row_index = max(x_and_y_pos_row_indexes)
-      top_left_model_index = self.index(first_row_index, 1)
-      bottom_right_model_index = self.index(last_row_index, 1)
-      
-      self.dataChanged.emit(top_left_model_index, bottom_right_model_index)
+      if x_and_y_pos_row_indexes:
+        first_row_index = min(x_and_y_pos_row_indexes)
+        last_row_index = max(x_and_y_pos_row_indexes)
+        top_left_model_index = self.index(first_row_index, 1)
+        bottom_right_model_index = self.index(last_row_index, 1)
+        
+        self.dataChanged.emit(top_left_model_index, bottom_right_model_index)
   
   def columnCount(self, parent=QModelIndex()):
     # Property name, property value
@@ -236,7 +179,7 @@ class EntityModel(QAbstractItemModel):
       if index.column() == 0:
         return prop.pretty_name
       else:
-        value = self.entity.__dict__[prop.attribute_name]
+        value = getattr(self.entity, prop.attribute_name)
         return Docs.prettify_prop_value(prop, value, self.entity)
     else:
       return None
@@ -245,7 +188,7 @@ class EntityModel(QAbstractItemModel):
     if self.entity is None:
       return (None, None, None)
     
-    return self.properties[row]
+    return list(self.properties.values())[row]
   
   def index(self, row, column, parent=QModelIndex()):
     if self.hasIndex(row, column, parent):

@@ -26,29 +26,23 @@ class GenericEntityGraphicsItem(QGraphicsItem):
       x = new_pos.x()
       y = new_pos.y()
       
-      if self.entity_class == "tile_entity":
-        # Lock to 16x16 grid
-        x = round(x // 16) * 16 + 8
-        y = round(y // 16) * 16 + 8
-      elif not QApplication.keyboardModifiers() & Qt.ControlModifier:
+      if not QApplication.keyboardModifiers() & Qt.ControlModifier:
         # Lock to 8x8 grid unless Ctrl is held down
         x = round(x // 8) * 8
         y = round(y // 8) * 8
       
       x = int(x)
       y = int(y)
-      new_pos.setX(x)
-      new_pos.setY(y)
       
-      self.setZValue(y)
-      
-      if self.entity_class == "tile_entity":
-        self.entity.x_pos = x//16
-        self.entity.y_pos = y//16
-      else:
-        self.entity.x_pos = x
-        self.entity.y_pos = y
+      # TODO: handle negatives better
+      self.entity.x = x
+      self.entity.y = y
       #self.entity.save()
+      
+      new_pos.setX(self.entity.x)
+      new_pos.setY(self.entity.y)
+      
+      self.setZValue(self.entity.y)
       
       self.scene().graphics_item_moved.emit(self)
       
@@ -141,7 +135,7 @@ class EntityImageItem(GraphicsImageItem, GenericEntityGraphicsItem):
     
     self.set_image(image, x_off, y_off)
     
-    self.setPos(self.entity.x_pos, self.entity.y_pos)
+    self.setPos(self.entity.x, self.entity.y)
 
 class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
   ENTITY_BRUSH = QBrush(QColor(200, 0, 200, 150))
@@ -164,7 +158,7 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
       self.init_exit_region()
   
   def init_entity(self):
-    self.setPos(self.entity.x_pos, self.entity.y_pos)
+    self.setPos(self.entity.x, self.entity.y)
     
     if self.entity.type == 3:
       self.setBrush(self.ENEMY_BRUSH)
@@ -172,7 +166,9 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
       self.setBrush(self.ENTITY_BRUSH)
   
   def init_tile_entity(self):
-    self.setPos(self.entity.x_pos*16+8, self.entity.y_pos*16+8)
+    self.setPos(self.entity.x, self.entity.y)
+    
+    self.setRect(0, 0, 16, 16)
     
     self.setBrush(self.TILE_ENTITY_BRUSH)
   
@@ -180,7 +176,7 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
     ext = self.entity
     room = self.entity.room
     
-    self.setPos(ext.x_pos, ext.y_pos)
+    self.setPos(ext.x, ext.y)
     
     self.setBrush(self.EXIT_BRUSH)
     
