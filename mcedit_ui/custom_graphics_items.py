@@ -83,14 +83,14 @@ class GraphicsImageItem(QGraphicsPixmapItem):
     left = orig_rect.left()
     right = orig_rect.right()
     
-    if top > -8:
-      top = -8
-    if bottom < 8:
-      bottom = 8
-    if left > -8:
-      left = -8
-    if right < 8:
-      right = 8
+    width = bottom - top
+    height = right - left
+    if width < 8:
+      left -= (8-width)//2
+      right += (8-width)//2
+    if height < 8:
+      top -= (8-height)//2
+      bottom += (8-height)//2
     
     return QRectF(left, top, right-left, bottom-top)
   
