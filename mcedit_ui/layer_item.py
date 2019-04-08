@@ -64,7 +64,7 @@ class LayerItem(QGraphicsRectItem):
       raise Exception("Layer BG%d has no layer data" % layer_index)
     if len(layer_data) == 0:
       raise Exception("Layer BG%d has zero-length layer data" % layer_index)
-    if layer_data.read_u16(0) == 0xFFFF:
+    if layer_data[0] == 0xFFFF:
       # No real layer data here
       return
     
@@ -73,9 +73,8 @@ class LayerItem(QGraphicsRectItem):
     room_width_in_16x16_tiles = room.width//16
     
     cached_tile_pixmaps_by_16x16_index = {}
-    for i in range(len(layer_data)//2):
-      layer_data_offset = i*2
-      tile_index_16x16 = layer_data.read_u16(layer_data_offset)
+    for i in range(len(layer_data)):
+      tile_index_16x16 = self.layer_data[i]
       
       x = (i % room_width_in_16x16_tiles)*16
       y = (i // room_width_in_16x16_tiles)*16
@@ -129,7 +128,7 @@ class LayerItem(QGraphicsRectItem):
     
     try:
       for tile_8x8_i in range(4):
-        tile_attrs = self.tileset_data.read_u16(tile_index_16x16*8 + tile_8x8_i*2)
+        tile_attrs = self.tileset_data[tile_index_16x16*4 + tile_8x8_i]
         
         horizontal_flip = (tile_attrs & 0x0400) > 0
         vertical_flip   = (tile_attrs & 0x0800) > 0
