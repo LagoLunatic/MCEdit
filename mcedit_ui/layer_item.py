@@ -50,6 +50,12 @@ class LayerItem(QGraphicsRectItem):
     area = room.area
     layer_index = self.layer_index
     
+    self.tile_graphics_items_by_pos = []
+    for tile_x in range(room.width//0x10):
+      self.tile_graphics_items_by_pos.append([])
+      for tile_y in range(room.height//0x10):
+        self.tile_graphics_items_by_pos[tile_x].append(None)
+    
     gfx_asset_list = area.get_gfx_asset_list(room.gfx_index)
     orig_gfx_data = gfx_asset_list.gfx_data
     if layer_index in [1, 3]:
@@ -61,12 +67,12 @@ class LayerItem(QGraphicsRectItem):
     if self.tileset_data is None:
       return
     
-    layer_data = room.layers_asset_list.layer_datas[layer_index]
-    if layer_data is None:
+    self.layer_data = room.layers_asset_list.layer_datas[layer_index]
+    if self.layer_data is None:
       raise Exception("Layer BG%d has no layer data" % layer_index)
-    if len(layer_data) == 0:
+    if len(self.layer_data) == 0:
       raise Exception("Layer BG%d has zero-length layer data" % layer_index)
-    if layer_data[0] == 0xFFFF:
+    if self.layer_data[0] == 0xFFFF:
       # No real layer data here
       return
     
@@ -74,22 +80,28 @@ class LayerItem(QGraphicsRectItem):
     
     room_width_in_16x16_tiles = room.width//16
     
-    cached_tile_pixmaps_by_16x16_index = {}
-    for i in range(len(layer_data)):
+    self.cached_tile_pixmaps_by_16x16_index = {}
+    for i in range(len(self.layer_data)):
       tile_index_16x16 = self.layer_data[i]
       
       x = (i % room_width_in_16x16_tiles)*16
       y = (i // room_width_in_16x16_tiles)*16
       
-      if tile_index_16x16 in cached_tile_pixmaps_by_16x16_index:
-        tile_pixmap = cached_tile_pixmaps_by_16x16_index[tile_index_16x16]
-      else:
-        tile_pixmap = self.render_tile_pixmap_by_16x16_tile_index(tile_index_16x16, x, y)
-        
-        cached_tile_pixmaps_by_16x16_index[tile_index_16x16] = tile_pixmap
+      tile_pixmap = self.get_tile_pixmap_by_16x16_index(tile_index_16x16, x, y)
       
       tile_item = QGraphicsPixmapItem(tile_pixmap, self)
       tile_item.setPos(x, y)
+      self.tile_graphics_items_by_pos[x//0x10][y//0x10] = tile_item
+  
+  def get_tile_pixmap_by_16x16_index(self, tile_index_16x16, x, y):
+    if tile_index_16x16 in self.cached_tile_pixmaps_by_16x16_index:
+      tile_pixmap = self.cached_tile_pixmaps_by_16x16_index[tile_index_16x16]
+    else:
+      tile_pixmap = self.render_tile_pixmap_by_16x16_tile_index(tile_index_16x16, x, y)
+      
+      self.cached_tile_pixmaps_by_16x16_index[tile_index_16x16] = tile_pixmap
+    
+    return tile_pixmap
   
   def render_tile_pixmap_by_16x16_tile_index(self, tile_index_16x16, x, y):
     room = self.room
