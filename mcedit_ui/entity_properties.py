@@ -131,7 +131,7 @@ class EntityModel(QAbstractItemModel):
     if moved_graphics_item == self.entity_graphics_item:
       x_and_y_pos_row_indexes = [
         i for i, prop in enumerate(self.properties.values())
-        if prop.pretty_name in ["X Pos", "Y Pos", "Tile X", "Tile Y"]
+        if prop.pretty_name in ["X Pos", "Y Pos", "Tile X", "Tile Y", "Center X", "Center Y"]
       ]
       
       if x_and_y_pos_row_indexes:
