@@ -37,6 +37,8 @@ class LayerItem(QGraphicsRectItem):
         pass
     else:
       if layer_index == 3:
+        if area.get_gfx_asset_list(room.gfx_index).tile_mappings_8x8[layer_index] is None:
+          return
         self.render_layer_mapped(color_mode=16)
       elif room.layers_asset_list.tile_mappings_8x8[layer_index] is not None:
         self.render_layer_mapped(color_mode=16)
