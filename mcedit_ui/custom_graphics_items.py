@@ -37,7 +37,7 @@ class GenericEntityGraphicsItem(QGraphicsItem):
       # TODO: handle negatives better
       self.entity.x = x
       self.entity.y = y
-      #self.entity.save()
+      self.entity.save()
       
       new_pos.setX(self.entity.x)
       new_pos.setY(self.entity.y)

@@ -96,6 +96,7 @@ class CustomItemDelegate(QItemDelegate):
       value = 0
     
     setattr(model.entity, prop.attribute_name, value)
+    model.entity.save()
     model.entity.update_params()
     model.entity_graphics_item.update_from_entity()
 
