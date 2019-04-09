@@ -96,7 +96,8 @@ class MCEditorWindow(QMainWindow):
     self.ui.area_index.activated.connect(self.area_index_changed)
     self.ui.room_index.activated.connect(self.room_index_changed)
     
-    self.ui.entity_lists_list.itemChanged.connect(self.entity_list_visibility_toggled)
+    self.ui.entity_lists_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
+    self.ui.entity_lists_list.itemSelectionChanged.connect(self.entity_list_visibility_toggled)
     
     #self.setWindowTitle("Minish Cap Editor %s" % VERSION)
     
@@ -290,12 +291,13 @@ class MCEditorWindow(QMainWindow):
     self.room_graphics_scene.addItem(self.entities_view_item)
     
     i = 0
+    self.ui.entity_lists_list.blockSignals(True)
     for entity_list, graphics_items in self.entities_view_item.entity_graphics_items_by_entity_list:
       list_widget_item = QListWidgetItem("%02X %08X %s" % (i, entity_list.entity_list_ptr, entity_list.name))
-      list_widget_item.setFlags(list_widget_item.flags() | Qt.ItemIsUserCheckable)
-      list_widget_item.setCheckState(Qt.Checked)
       self.ui.entity_lists_list.addItem(list_widget_item)
+      list_widget_item.setSelected(True)
       i += 1
+    self.ui.entity_lists_list.blockSignals(False)
     
     self.tile_entities_view_item = QGraphicsRectItem()
     self.room_graphics_scene.addItem(self.tile_entities_view_item)
@@ -411,8 +413,6 @@ class MCEditorWindow(QMainWindow):
     map_graphics_item = QGraphicsPixmapItem(pixmap)
     self.map_graphics_scene.addItem(map_graphics_item)
     
-    #self.ui.map_graphics_view.resize(map_image.size[0]+4, map_image.size[1]+4)
-    
     self.selected_room_graphics_item = QGraphicsRectItem()
     self.selected_room_graphics_item.setPen(QPen(QColor(220, 0, 0, 255)))
     self.selected_room_graphics_item.setRect(0, 0, 0, 0)
@@ -499,12 +499,12 @@ class MCEditorWindow(QMainWindow):
     self.tile_entities_view_item.setVisible(self.ui.actionTile_Entities.isChecked())
     self.exits_view_item.setVisible(self.ui.actionExits.isChecked())
   
-  def entity_list_visibility_toggled(self, list_widget_item):
-    entity_list_index = int(list_widget_item.text().split(" ")[0], 16)
-    entity_list, graphics_items = self.entities_view_item.entity_graphics_items_by_entity_list[entity_list_index]
-    
-    for entity_item in graphics_items:
-      entity_item.setVisible(list_widget_item.checkState() == Qt.Checked)
+  def entity_list_visibility_toggled(self):
+    for entity_list_index in range(self.ui.entity_lists_list.count()):
+      list_widget_item = self.ui.entity_lists_list.item(entity_list_index)
+      entity_list, graphics_items = self.entities_view_item.entity_graphics_items_by_entity_list[entity_list_index]
+      for entity_item in graphics_items:
+        entity_item.setVisible(list_widget_item.isSelected())
   
   def select_entity_graphics_item(self, entity_graphics_item):
     if entity_graphics_item:
