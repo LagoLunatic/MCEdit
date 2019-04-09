@@ -12,13 +12,6 @@ class TilesetGraphicsScene(ClickableGraphicsScene):
     
     self.main_window = main_window
     
-    self.selected_tile_indexes = [0]
-    self.selection_x = 0
-    self.selection_y = 0
-    self.selection_w = 1
-    self.selection_h = 1
-    self.selection_origin = None
-    
     self.clicked.connect(self.mouse_clicked_on_tileset)
     self.moved.connect(self.mouse_moved_on_tileset)
     self.released.connect(self.mouse_released_on_tileset)
@@ -29,6 +22,8 @@ class TilesetGraphicsScene(ClickableGraphicsScene):
     self.selection_rect = QGraphicsRectItem()
     self.selection_rect.setPen(QPen(QColor(255, 0, 0, 255)))
     self.addItem(self.selection_rect)
+    
+    self.select_tile_by_index(0)
     self.update_selection_rect()
   
   def mouse_clicked_on_tileset(self, x, y, button):
@@ -99,6 +94,8 @@ class TilesetGraphicsScene(ClickableGraphicsScene):
     self.tileset_graphics_item.set_image(new_image)
     self.tileset_width = new_image.width
     self.tileset_height = new_image.height
+    
+    self.select_tile_by_index(0)
   
   def update_selection_rect(self):
     self.selection_rect.setPos(self.selection_x*0x10, self.selection_y*0x10)

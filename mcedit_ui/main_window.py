@@ -54,6 +54,8 @@ class MCEditorWindow(QMainWindow):
     self.room = None
     
     self.selected_layer_index = None
+    self.selected_tileset_graphics_scene = None
+    self.selected_tiles_cursor = None
     
     self.last_emulator_process = None
     
@@ -402,6 +404,9 @@ class MCEditorWindow(QMainWindow):
         layer_item.setOpacity(0.5)
   
   def update_selected_tiles_cursor_image(self):
+    if self.selected_tiles_cursor is None:
+      return
+    
     if self.selected_tileset_graphics_scene is None:
       self.selected_tiles_cursor.hide()
     else:
