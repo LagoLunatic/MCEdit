@@ -227,8 +227,13 @@ class MCEditorWindow(QMainWindow):
     self.select_entity(entity)
   
   def load_room(self):
-    self.room_graphics_scene.clear()
     self.ui.entity_lists_list.clear()
+    self.room_graphics_scene.clear()
+    
+    room_boundaries_item = QGraphicsRectItem(0, 0, self.room.width, self.room.height)
+    room_boundaries_item.setBrush(QBrush(QColor(200, 200, 200, 255)))
+    room_boundaries_item.setPen(QPen(QColor(255, 255, 255, 0)))
+    self.room_graphics_scene.addItem(room_boundaries_item)
     
     self.update_selected_room_on_map()
     
