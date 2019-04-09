@@ -9,6 +9,7 @@ from mcedit_ui.custom_graphics_items import *
 from mcedit_ui.entity_layer_item import *
 from mcedit_ui.entity_search_dialog import *
 from mcedit_ui.layer_item import *
+from mcedit_ui.tileset_graphics_scene import *
 
 from mclib.game import Game
 from mclib.renderer import Renderer
@@ -52,6 +53,8 @@ class MCEditorWindow(QMainWindow):
     self.area = None
     self.room = None
     
+    self.selected_layer_index = None
+    
     self.last_emulator_process = None
     
     self.ui.scrollArea.setFrameShape(QFrame.NoFrame)
@@ -60,10 +63,22 @@ class MCEditorWindow(QMainWindow):
     self.ui.room_graphics_view.setScene(self.room_graphics_scene)
     self.ui.room_graphics_view.setFocus()
     self.room_graphics_scene.clicked.connect(self.room_clicked)
+    self.room_graphics_scene.clicked.connect(self.layer_clicked)
+    self.room_graphics_scene.moved.connect(self.layer_clicked)
     
     self.map_graphics_scene = ClickableGraphicsScene()
     self.ui.map_graphics_view.setScene(self.map_graphics_scene)
     self.map_graphics_scene.clicked.connect(self.map_clicked)
+    
+    self.bg2_tileset_graphics_scene = TilesetGraphicsScene()
+    self.ui.bg2_tileset_graphics_view.setScene(self.bg2_tileset_graphics_scene)
+    self.bg1_tileset_graphics_scene = TilesetGraphicsScene()
+    self.ui.bg1_tileset_graphics_view.setScene(self.bg1_tileset_graphics_scene)
+    self.selected_tileset_graphics_scene = None
+    
+    QShortcut(QKeySequence(Qt.Key_F1), self, self.enter_entity_edit_mode)
+    QShortcut(QKeySequence(Qt.Key_F2), self, self.enter_bg2_layer_edit_mode)
+    QShortcut(QKeySequence(Qt.Key_F3), self, self.enter_bg1_layer_edit_mode)
     
     self.ui.actionOpen_ROM.triggered.connect(self.open_rom_dialog)
     
@@ -221,6 +236,9 @@ class MCEditorWindow(QMainWindow):
     
     try:
       self.renderer.update_curr_room_palettes_and_tilesets(self.room)
+      
+      self.bg2_tileset_graphics_scene.update_tileset_image(self.renderer.curr_room_tileset_images[2])
+      self.bg1_tileset_graphics_scene.update_tileset_image(self.renderer.curr_room_tileset_images[1])
     except Exception as e:
       stack_trace = traceback.format_exc()
       error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
@@ -248,12 +266,19 @@ class MCEditorWindow(QMainWindow):
     self.update_visible_view_items()
   
   def load_room_layers(self):
-    self.layer_bg3_view_item = LayerItem(self.room, 3, self.renderer)
+    self.layer_bg3_view_item = LayerItem(self.room, 3, self.renderer, self)
     self.room_graphics_scene.addItem(self.layer_bg3_view_item)
-    self.layer_bg2_view_item = LayerItem(self.room, 2, self.renderer)
+    self.layer_bg2_view_item = LayerItem(self.room, 2, self.renderer, self)
     self.room_graphics_scene.addItem(self.layer_bg2_view_item)
-    self.layer_bg1_view_item = LayerItem(self.room, 1, self.renderer)
+    self.layer_bg1_view_item = LayerItem(self.room, 1, self.renderer, self)
     self.room_graphics_scene.addItem(self.layer_bg1_view_item)
+    
+    self.layer_items = [
+      None,
+      self.layer_bg1_view_item,
+      self.layer_bg2_view_item,
+      self.layer_bg3_view_item,
+    ]
   
   def load_room_entities(self):
     self.entities_view_item = EntityLayerItem(self.room.entity_lists, self.renderer)
@@ -286,6 +311,16 @@ class MCEditorWindow(QMainWindow):
     
     self.select_entity_graphics_item(None)
   
+  def show_all_entities(self):
+    self.entities_view_item.show()
+    self.tile_entities_view_item.show()
+    self.exits_view_item.show()
+  
+  def hide_all_entities(self):
+    self.entities_view_item.hide()
+    self.tile_entities_view_item.hide()
+    self.exits_view_item.hide()
+  
   def center_room_view(self):
     if self.room is not None:
       self.ui.room_graphics_view.centerOn(self.room.width/2, self.room.height/2)
@@ -307,6 +342,49 @@ class MCEditorWindow(QMainWindow):
         self.change_area_and_room_by_exit(graphics_item.entity.exit)
     else:
       self.select_entity_graphics_item(None)
+  
+  def enter_entity_edit_mode(self):
+    self.ui.right_sidebar.setCurrentIndex(0)
+    
+    self.selected_tileset_graphics_scene = None
+    self.selected_layer_index = None
+    self.show_all_entities()
+    
+    for layer_item in self.layer_items:
+      if layer_item is None:
+        continue
+      layer_item.setOpacity(1.0)
+  
+  def enter_bg2_layer_edit_mode(self):
+    self.enter_layer_edit_mode_by_layer_index(2)
+  
+  def enter_bg1_layer_edit_mode(self):
+    self.enter_layer_edit_mode_by_layer_index(1)
+  
+  def enter_layer_edit_mode_by_layer_index(self, layer_index):
+    if layer_index == 2:
+      self.selected_tileset_graphics_scene = self.bg2_tileset_graphics_scene
+      self.ui.right_sidebar.setCurrentIndex(1)
+    elif layer_index == 1:
+      self.selected_tileset_graphics_scene = self.bg1_tileset_graphics_scene
+      self.ui.right_sidebar.setCurrentIndex(2)
+    
+    self.selected_layer_index = layer_index
+    self.hide_all_entities()
+    
+    for layer_item in self.layer_items:
+      if layer_item is None:
+        continue
+      if layer_item.layer_index == layer_index:
+        layer_item.setOpacity(1.0)
+      else:
+        layer_item.setOpacity(0.5)
+  
+  def layer_clicked(self, x, y, button):
+    if self.selected_layer_index is not None:
+      layer_item = self.layer_items[self.selected_layer_index]
+      layer_item.layer_clicked(x, y, button)
+      return
   
   def load_map(self):
     self.map_graphics_scene.clear()

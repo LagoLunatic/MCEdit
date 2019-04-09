@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Fri Apr  5 16:04:15 2019
+# Created: Tue Apr  9 10:50:47 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,6 +28,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.formLayout = QtWidgets.QFormLayout()
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
         self.formLayout.setObjectName("formLayout")
         self.label = QtWidgets.QLabel(self.left_sidebar)
         self.label.setObjectName("label")
@@ -59,7 +60,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 886, 693))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 658, 693))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -68,21 +69,41 @@ class Ui_MainWindow(object):
         self.room_graphics_view.setObjectName("room_graphics_view")
         self.verticalLayout.addWidget(self.room_graphics_view)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.right_sidebar = QtWidgets.QWidget(self.splitter)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(1)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.right_sidebar.sizePolicy().hasHeightForWidth())
-        self.right_sidebar.setSizePolicy(sizePolicy)
+        self.right_sidebar = QtWidgets.QTabWidget(self.splitter)
+        self.right_sidebar.setMinimumSize(QtCore.QSize(300, 0))
         self.right_sidebar.setObjectName("right_sidebar")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.right_sidebar)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.entity_properies = EntityProperties(self.right_sidebar)
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.tab)
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.entity_properies = EntityProperties(self.tab)
         self.entity_properies.setObjectName("entity_properies")
-        self.verticalLayout_3.addWidget(self.entity_properies)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_3.addItem(spacerItem1)
+        self.verticalLayout_6.addWidget(self.entity_properies)
+        self.right_sidebar.addTab(self.tab, "")
+        self.tab_2 = QtWidgets.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.tab_2)
+        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_7.setObjectName("verticalLayout_7")
+        self.bg2_tileset_graphics_view = QtWidgets.QGraphicsView(self.tab_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bg2_tileset_graphics_view.sizePolicy().hasHeightForWidth())
+        self.bg2_tileset_graphics_view.setSizePolicy(sizePolicy)
+        self.bg2_tileset_graphics_view.setObjectName("bg2_tileset_graphics_view")
+        self.verticalLayout_7.addWidget(self.bg2_tileset_graphics_view)
+        self.right_sidebar.addTab(self.tab_2, "")
+        self.tab_3 = QtWidgets.QWidget()
+        self.tab_3.setObjectName("tab_3")
+        self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.tab_3)
+        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_8.setObjectName("verticalLayout_8")
+        self.bg1_tileset_graphics_view = QtWidgets.QGraphicsView(self.tab_3)
+        self.bg1_tileset_graphics_view.setObjectName("bg1_tileset_graphics_view")
+        self.verticalLayout_8.addWidget(self.bg1_tileset_graphics_view)
+        self.right_sidebar.addTab(self.tab_3, "")
         self.horizontalLayout.addWidget(self.splitter)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -145,12 +166,16 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuBuild.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.right_sidebar.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Minish Cap Editor", None, -1))
         self.label.setText(QtWidgets.QApplication.translate("MainWindow", "Area", None, -1))
         self.label_2.setText(QtWidgets.QApplication.translate("MainWindow", "Room", None, -1))
+        self.right_sidebar.setTabText(self.right_sidebar.indexOf(self.tab), QtWidgets.QApplication.translate("MainWindow", "Entities", None, -1))
+        self.right_sidebar.setTabText(self.right_sidebar.indexOf(self.tab_2), QtWidgets.QApplication.translate("MainWindow", "BG2", None, -1))
+        self.right_sidebar.setTabText(self.right_sidebar.indexOf(self.tab_3), QtWidgets.QApplication.translate("MainWindow", "BG1", None, -1))
         self.menuFile.setTitle(QtWidgets.QApplication.translate("MainWindow", "File", None, -1))
         self.menuView.setTitle(QtWidgets.QApplication.translate("MainWindow", "View", None, -1))
         self.menuTools.setTitle(QtWidgets.QApplication.translate("MainWindow", "Tools", None, -1))
@@ -167,5 +192,5 @@ class Ui_MainWindow(object):
         self.actionTest_Room.setShortcut(QtWidgets.QApplication.translate("MainWindow", "F7", None, -1))
         self.actionLayer_BG3.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG3", None, -1))
 
-from mcedit_ui.room_view import RoomView
 from mcedit_ui.entity_properties import EntityProperties
+from mcedit_ui.room_view import RoomView

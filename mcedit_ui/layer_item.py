@@ -8,13 +8,14 @@ import traceback
 from mclib.visual_zone import VisualZone
 
 class LayerItem(QGraphicsRectItem):
-  def __init__(self, room, layer_index, renderer):
+  def __init__(self, room, layer_index, renderer, main_window):
     super().__init__()
     
     self.room = room
     self.layer_index = layer_index
     self.renderer = renderer
     self.rom = room.rom
+    self.main_window = main_window
     
     try:
       self.render_layer()
@@ -23,6 +24,34 @@ class LayerItem(QGraphicsRectItem):
       error_message = "Error rendering layer in room %02X-%02X:\n" % (room.area.area_index, room.room_index)
       error_message += str(e) + "\n\n" + stack_trace
       print(error_message)
+  
+  def layer_clicked(self, x, y, button):
+    if x < 0 or y < 0 or x >= self.room.width or y >= self.room.height:
+      return
+  
+    tile_x = x//0x10
+    tile_y = y//0x10
+    x = tile_x*0x10
+    y = tile_y*0x10
+    
+    curr_tileset_scene = self.main_window.selected_tileset_graphics_scene
+    
+    if button == Qt.LeftButton:
+      tile_index_16x16 = curr_tileset_scene.selected_tile_index
+      
+      tile_pixmap = self.get_tile_pixmap_by_16x16_index(tile_index_16x16, x, y)
+      tile_item = self.tile_graphics_items_by_pos[tile_x][tile_y]
+      tile_item.setPixmap(tile_pixmap)
+      
+      room_width_in_16x16_tiles = self.room.width//16
+      tile_index_on_layer = tile_y*room_width_in_16x16_tiles + tile_x
+      self.layer_data[tile_index_on_layer] = tile_index_16x16
+    elif button == Qt.RightButton:
+      room_width_in_16x16_tiles = self.room.width//16
+      tile_index_on_layer = tile_y*room_width_in_16x16_tiles + tile_x
+      tile_index_on_tileset = self.layer_data[tile_index_on_layer]
+      curr_tileset_scene.selected_tile_index = tile_index_on_tileset
+      curr_tileset_scene.update_selection_rect()
   
   def render_layer(self):
     room = self.room

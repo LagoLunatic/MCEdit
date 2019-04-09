@@ -28,6 +28,11 @@ class EntityProperties(QWidget):
     self.properties_tree.setModel(self.entity_model)
     self.properties_tree.hide()
     v_layout.addWidget(self.properties_tree)
+    
+    # Make it so when the properties tree is hidden the text at the top still stays at the top.
+    size_policy = self.properties_tree.sizePolicy()
+    size_policy.setRetainSizeWhenHidden(True)
+    self.properties_tree.setSizePolicy(size_policy)
   
   def select_entity_graphics_item(self, entity_graphics_item):
     if entity_graphics_item is None:
