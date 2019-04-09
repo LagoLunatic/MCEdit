@@ -37,7 +37,7 @@ class LayerItem(QGraphicsRectItem):
     curr_tileset_scene = self.main_window.selected_tileset_graphics_scene
     
     if button == Qt.LeftButton:
-      tile_index_16x16 = curr_tileset_scene.selected_tile_index
+      tile_index_16x16 = curr_tileset_scene.selected_tile_indexes[0]
       
       tile_pixmap = self.get_tile_pixmap_by_16x16_index(tile_index_16x16, x, y)
       tile_item = self.tile_graphics_items_by_pos[tile_x][tile_y]
@@ -50,8 +50,7 @@ class LayerItem(QGraphicsRectItem):
       room_width_in_16x16_tiles = self.room.width//16
       tile_index_on_layer = tile_y*room_width_in_16x16_tiles + tile_x
       tile_index_on_tileset = self.layer_data[tile_index_on_layer]
-      curr_tileset_scene.selected_tile_index = tile_index_on_tileset
-      curr_tileset_scene.update_selection_rect()
+      curr_tileset_scene.select_tile_by_index(tile_index_on_tileset)
   
   def render_layer(self):
     room = self.room

@@ -64,15 +64,15 @@ class MCEditorWindow(QMainWindow):
     self.ui.room_graphics_view.setFocus()
     self.room_graphics_scene.clicked.connect(self.room_clicked)
     self.room_graphics_scene.clicked.connect(self.layer_clicked)
-    self.room_graphics_scene.moved.connect(self.layer_clicked)
+    self.room_graphics_scene.moved.connect(self.mouse_moved_on_room)
     
     self.map_graphics_scene = ClickableGraphicsScene()
     self.ui.map_graphics_view.setScene(self.map_graphics_scene)
     self.map_graphics_scene.clicked.connect(self.map_clicked)
     
-    self.bg2_tileset_graphics_scene = TilesetGraphicsScene()
+    self.bg2_tileset_graphics_scene = TilesetGraphicsScene(self)
     self.ui.bg2_tileset_graphics_view.setScene(self.bg2_tileset_graphics_scene)
-    self.bg1_tileset_graphics_scene = TilesetGraphicsScene()
+    self.bg1_tileset_graphics_scene = TilesetGraphicsScene(self)
     self.ui.bg1_tileset_graphics_view.setScene(self.bg1_tileset_graphics_scene)
     self.selected_tileset_graphics_scene = None
     
@@ -236,6 +236,11 @@ class MCEditorWindow(QMainWindow):
     room_boundaries_item.setPen(QPen(QColor(255, 255, 255, 0)))
     self.room_graphics_scene.addItem(room_boundaries_item)
     
+    self.selected_tiles_cursor = QGraphicsPixmapItem()
+    self.selected_tiles_cursor.setZValue(99999999)
+    self.room_graphics_scene.addItem(self.selected_tiles_cursor)
+    self.update_selected_tiles_cursor_image()
+    
     self.update_selected_room_on_map()
     
     self.center_room_view()
@@ -350,11 +355,18 @@ class MCEditorWindow(QMainWindow):
     else:
       self.select_entity_graphics_item(None)
   
+  def mouse_moved_on_room(self, x, y, button):
+    if button == Qt.LeftButton:
+      self.layer_clicked(x, y, button)
+    
+    self.update_selected_tiles_cursor_position(x, y, button)
+  
   def enter_entity_edit_mode(self):
     self.ui.right_sidebar.setCurrentIndex(0)
     
     self.selected_tileset_graphics_scene = None
     self.selected_layer_index = None
+    self.update_selected_tiles_cursor_image()
     self.show_all_entities()
     
     for layer_item in self.layer_items:
@@ -376,6 +388,8 @@ class MCEditorWindow(QMainWindow):
       self.selected_tileset_graphics_scene = self.bg1_tileset_graphics_scene
       self.ui.right_sidebar.setCurrentIndex(2)
     
+    self.update_selected_tiles_cursor_image()
+    
     self.selected_layer_index = layer_index
     self.hide_all_entities()
     
@@ -386,6 +400,23 @@ class MCEditorWindow(QMainWindow):
         layer_item.setOpacity(1.0)
       else:
         layer_item.setOpacity(0.5)
+  
+  def update_selected_tiles_cursor_image(self):
+    if self.selected_tileset_graphics_scene is None:
+      self.selected_tiles_cursor.hide()
+    else:
+      pixmap = self.selected_tileset_graphics_scene.get_selection_as_pixmap()
+      self.selected_tiles_cursor.setPixmap(pixmap)
+      self.selected_tiles_cursor.show()
+  
+  def update_selected_tiles_cursor_position(self, x, y, button):
+    if self.selected_tileset_graphics_scene is None:
+      self.selected_tiles_cursor.hide()
+    elif x < 0 or y < 0 or x >= self.room.width or y >= self.room.height:
+      self.selected_tiles_cursor.hide()
+    else:
+      self.selected_tiles_cursor.setPos(x//0x10*0x10, y//0x10*0x10)
+      self.selected_tiles_cursor.show()
   
   def layer_clicked(self, x, y, button):
     if self.selected_layer_index is not None:
