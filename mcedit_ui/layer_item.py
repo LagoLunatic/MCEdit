@@ -37,15 +37,22 @@ class LayerItem(QGraphicsRectItem):
     curr_tileset_scene = self.main_window.selected_tileset_graphics_scene
     
     if button == Qt.LeftButton:
-      tile_index_16x16 = curr_tileset_scene.selected_tile_indexes[0]
-      
-      tile_pixmap = self.get_tile_pixmap_by_16x16_index(tile_index_16x16, x, y)
-      tile_item = self.tile_graphics_items_by_pos[tile_x][tile_y]
-      tile_item.setPixmap(tile_pixmap)
-      
-      room_width_in_16x16_tiles = self.room.width//16
-      tile_index_on_layer = tile_y*room_width_in_16x16_tiles + tile_x
-      self.layer_data[tile_index_on_layer] = tile_index_16x16
+      for x_off in range(curr_tileset_scene.selection_w):
+        for y_off in range(curr_tileset_scene.selection_h):
+          curr_tile_x_on_layer = tile_x + x_off
+          curr_tile_y_on_layer = tile_y + y_off
+          curr_x_on_layer = curr_tile_x_on_layer*0x10
+          curr_y_on_layer = curr_tile_y_on_layer*0x10
+          
+          tile_index_16x16 = curr_tileset_scene.selected_tile_indexes[x_off + y_off*curr_tileset_scene.selection_w]
+          
+          tile_pixmap = self.get_tile_pixmap_by_16x16_index(tile_index_16x16, curr_x_on_layer, curr_y_on_layer)
+          tile_item = self.tile_graphics_items_by_pos[curr_tile_x_on_layer][curr_tile_y_on_layer]
+          tile_item.setPixmap(tile_pixmap)
+          
+          room_width_in_16x16_tiles = self.room.width//16
+          tile_index_on_layer = curr_tile_y_on_layer*room_width_in_16x16_tiles + curr_tile_x_on_layer
+          self.layer_data[tile_index_on_layer] = tile_index_16x16
     elif button == Qt.RightButton:
       room_width_in_16x16_tiles = self.room.width//16
       tile_index_on_layer = tile_y*room_width_in_16x16_tiles + tile_x
