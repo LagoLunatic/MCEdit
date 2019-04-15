@@ -7,9 +7,11 @@ from mcedit_ui.ui_main import Ui_MainWindow
 from mcedit_ui.clickable_graphics_scene import *
 from mcedit_ui.custom_graphics_items import *
 from mcedit_ui.entity_layer_item import *
-from mcedit_ui.entity_search_dialog import *
 from mcedit_ui.layer_item import *
 from mcedit_ui.tileset_graphics_scene import *
+
+from mcedit_ui.entity_search_dialog import *
+from mcedit_ui.save_editor_dialog import *
 
 from mclib.game import Game
 from mclib.renderer import Renderer
@@ -92,6 +94,7 @@ class MCEditorWindow(QMainWindow):
     self.ui.actionExits.triggered.connect(self.update_visible_view_items)
     
     self.ui.actionEntity_Search.triggered.connect(self.open_entity_search)
+    self.ui.actionSave_Editor.triggered.connect(self.open_save_editor)
     
     self.ui.actionTest_Room.triggered.connect(self.test_room)
     
@@ -561,6 +564,7 @@ class MCEditorWindow(QMainWindow):
     self.select_entity_graphics_item(entity_graphics_item)
     self.ui.room_graphics_view.centerOn(entity_graphics_item)
   
+  
   def close_open_dialogs(self):
     for dialog in self.open_dialogs:
       dialog.close()
@@ -569,6 +573,10 @@ class MCEditorWindow(QMainWindow):
   def open_entity_search(self):
     entity_search_dialog = EntitySearchDialog(self)
     self.open_dialogs.append(entity_search_dialog)
+  
+  def open_save_editor(self):
+    dialog = SaveEditorDialog(self)
+    self.open_dialogs.append(dialog)
   
   
   def test_room(self):

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Tue Apr  9 10:50:47 2019
+# Created: Mon Apr 15 12:55:13 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -60,7 +60,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 658, 693))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 680, 693))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -151,6 +151,8 @@ class Ui_MainWindow(object):
         self.actionLayer_BG3.setCheckable(True)
         self.actionLayer_BG3.setChecked(True)
         self.actionLayer_BG3.setObjectName("actionLayer_BG3")
+        self.actionSave_Editor = QtWidgets.QAction(MainWindow)
+        self.actionSave_Editor.setObjectName("actionSave_Editor")
         self.menuFile.addAction(self.actionOpen_ROM)
         self.menuView.addAction(self.actionLayer_BG1)
         self.menuView.addAction(self.actionLayer_BG2)
@@ -159,6 +161,7 @@ class Ui_MainWindow(object):
         self.menuView.addAction(self.actionTile_Entities)
         self.menuView.addAction(self.actionExits)
         self.menuTools.addAction(self.actionEntity_Search)
+        self.menuTools.addAction(self.actionSave_Editor)
         self.menuBuild.addAction(self.actionTest_Room)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -191,6 +194,8 @@ class Ui_MainWindow(object):
         self.actionTest_Room.setText(QtWidgets.QApplication.translate("MainWindow", "Test Room", None, -1))
         self.actionTest_Room.setShortcut(QtWidgets.QApplication.translate("MainWindow", "F7", None, -1))
         self.actionLayer_BG3.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG3", None, -1))
+        self.actionSave_Editor.setText(QtWidgets.QApplication.translate("MainWindow", "Save Editor", None, -1))
+        self.actionSave_Editor.setShortcut(QtWidgets.QApplication.translate("MainWindow", "V", None, -1))
 
-from mcedit_ui.entity_properties import EntityProperties
 from mcedit_ui.room_view import RoomView
+from mcedit_ui.entity_properties import EntityProperties

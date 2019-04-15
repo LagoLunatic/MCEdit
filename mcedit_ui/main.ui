@@ -97,7 +97,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>658</width>
+          <width>680</width>
           <height>693</height>
          </rect>
         </property>
@@ -239,6 +239,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionEntity_Search"/>
+    <addaction name="actionSave_Editor"/>
    </widget>
    <widget class="QMenu" name="menuBuild">
     <property name="title">
@@ -337,6 +338,14 @@
    </property>
    <property name="text">
     <string>Layer BG3</string>
+   </property>
+  </action>
+  <action name="actionSave_Editor">
+   <property name="text">
+    <string>Save Editor</string>
+   </property>
+   <property name="shortcut">
+    <string>V</string>
    </property>
   </action>
  </widget>
