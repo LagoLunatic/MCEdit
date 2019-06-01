@@ -418,6 +418,9 @@ class MCEditorWindow(QMainWindow):
       self.selected_tiles_cursor.show()
   
   def update_selected_tiles_cursor_position(self, x, y, button):
+    if self.selected_tiles_cursor is None:
+      return
+    
     if self.selected_tileset_graphics_scene is None:
       self.selected_tiles_cursor.hide()
     elif x < 0 or y < 0 or x >= self.room.width or y >= self.room.height:
