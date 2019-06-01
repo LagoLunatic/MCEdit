@@ -474,6 +474,7 @@ class MCEditorWindow(QMainWindow):
         areas_to_check = [
           area for area in self.game.areas
           if area.is_dungeon and area.dungeon_index == self.area.dungeon_index
+          and not area.area_index in [0x5F, 0x71, 0x77]
         ]
       else:
         areas_to_check = [self.area]
