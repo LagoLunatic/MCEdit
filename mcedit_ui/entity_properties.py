@@ -101,8 +101,12 @@ class CustomItemDelegate(QItemDelegate):
       value = 0
     
     setattr(model.entity, prop.attribute_name, value)
-    model.entity.save()
+    # Update the params in case the type of entity changed.
+    # Also ensure the X and Y pos remain correct, even if the internal representation of them has changed.
+    x, y = model.entity.x, model.entity.y
     model.entity.update_params()
+    model.entity.x, model.entity.y = x, y
+    model.entity.save()
     model.entity_graphics_item.update_from_entity()
 
 class EntityModel(QAbstractItemModel):
