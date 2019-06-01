@@ -643,4 +643,7 @@ class MCEditorWindow(QMainWindow):
     #  event.ignore()
     #  return
     
+    for dialog in self.open_dialogs:
+      dialog.close()
+    
     self.save_settings()
