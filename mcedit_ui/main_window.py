@@ -80,6 +80,7 @@ class MCEditorWindow(QMainWindow):
     self.ui.bg1_tileset_graphics_view.setScene(self.bg1_tileset_graphics_scene)
     self.selected_tileset_graphics_scene = None
     
+    self.ui.right_sidebar.currentChanged.connect(self.update_edit_mode_by_current_tab)
     QShortcut(QKeySequence(Qt.Key_F1), self, self.enter_entity_edit_mode)
     QShortcut(QKeySequence(Qt.Key_F2), self, self.enter_bg2_layer_edit_mode)
     QShortcut(QKeySequence(Qt.Key_F3), self, self.enter_bg1_layer_edit_mode)
@@ -365,6 +366,15 @@ class MCEditorWindow(QMainWindow):
       self.layer_clicked(x, y, button)
     
     self.update_selected_tiles_cursor_position(x, y, button)
+  
+  
+  def update_edit_mode_by_current_tab(self):
+    if self.ui.right_sidebar.currentIndex() == 0:
+      self.enter_entity_edit_mode()
+    elif self.ui.right_sidebar.currentIndex() == 1:
+      self.enter_bg2_layer_edit_mode()
+    elif self.ui.right_sidebar.currentIndex() == 2:
+      self.enter_bg1_layer_edit_mode()
   
   def enter_entity_edit_mode(self):
     self.ui.right_sidebar.setCurrentIndex(0)
