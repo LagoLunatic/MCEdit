@@ -281,6 +281,8 @@ class MCEditorWindow(QMainWindow):
     self.ui.room_graphics_view.updateSceneRect(self.room_graphics_scene.itemsBoundingRect())
     
     self.update_visible_view_items()
+    
+    self.update_edit_mode_by_current_tab()
   
   def load_room_layers(self):
     self.layer_bg3_view_item = LayerItem(self.room, 3, self.renderer, self)
