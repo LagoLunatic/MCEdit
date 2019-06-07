@@ -44,6 +44,11 @@ class LayerItem(QGraphicsRectItem):
           curr_x_on_layer = curr_tile_x_on_layer*0x10
           curr_y_on_layer = curr_tile_y_on_layer*0x10
           
+          if curr_x_on_layer >= self.room.width:
+            continue
+          if curr_y_on_layer >= self.room.height:
+            continue
+          
           tile_index_16x16 = curr_tileset_scene.selected_tile_indexes[x_off + y_off*curr_tileset_scene.selection_w]
           
           tile_pixmap = self.get_tile_pixmap_by_16x16_index(tile_index_16x16, curr_x_on_layer, curr_y_on_layer)
