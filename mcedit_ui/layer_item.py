@@ -57,11 +57,13 @@ class LayerItem(QGraphicsRectItem):
           
           room_width_in_16x16_tiles = self.room.width//16
           tile_index_on_layer = curr_tile_y_on_layer*room_width_in_16x16_tiles + curr_tile_x_on_layer
-          self.layer_data[tile_index_on_layer] = tile_index_16x16
+          self.layer.data[tile_index_on_layer] = tile_index_16x16
+          
+          self.layer.has_unsaved_changes = True
     elif button == Qt.RightButton:
       room_width_in_16x16_tiles = self.room.width//16
       tile_index_on_layer = tile_y*room_width_in_16x16_tiles + tile_x
-      tile_index_on_tileset = self.layer_data[tile_index_on_layer]
+      tile_index_on_tileset = self.layer.data[tile_index_on_layer]
       curr_tileset_scene.select_tile_by_index(tile_index_on_tileset)
   
   def render_layer(self):
@@ -107,12 +109,12 @@ class LayerItem(QGraphicsRectItem):
     if self.tileset_data is None:
       return
     
-    self.layer_data = room.layers_asset_list.layer_datas[layer_index]
-    if self.layer_data is None:
+    self.layer = room.layers_asset_list.layers[layer_index]
+    if self.layer is None:
       raise Exception("Layer BG%d has no layer data" % layer_index)
-    if len(self.layer_data) == 0:
+    if len(self.layer.data) == 0:
       raise Exception("Layer BG%d has zero-length layer data" % layer_index)
-    if self.layer_data[0] == 0xFFFF:
+    if self.layer.data[0] == 0xFFFF:
       # No real layer data here
       return
     
@@ -121,8 +123,8 @@ class LayerItem(QGraphicsRectItem):
     room_width_in_16x16_tiles = room.width//16
     
     self.cached_tile_pixmaps_by_16x16_index = {}
-    for i in range(len(self.layer_data)):
-      tile_index_16x16 = self.layer_data[i]
+    for i in range(len(self.layer.data)):
+      tile_index_16x16 = self.layer.data[i]
       
       x = (i % room_width_in_16x16_tiles)*16
       y = (i // room_width_in_16x16_tiles)*16

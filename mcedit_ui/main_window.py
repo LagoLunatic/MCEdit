@@ -55,6 +55,7 @@ class MCEditorWindow(QMainWindow):
     self.area = None
     self.room = None
     
+    self.layer_items = []
     self.selected_layer_index = None
     self.selected_tileset_graphics_scene = None
     self.selected_tiles_cursor = None
@@ -199,6 +200,8 @@ class MCEditorWindow(QMainWindow):
       self.room_index_changed(default_room_index)
   
   def room_index_changed(self, room_index):
+    self.save_any_unsaved_changes_for_all_layers()
+    
     self.room_index = room_index
     self.ui.room_index.setCurrentIndex(room_index)
     
@@ -447,6 +450,23 @@ class MCEditorWindow(QMainWindow):
       layer_item.layer_clicked(x, y, button)
       return
   
+  def save_any_unsaved_changes_for_all_layers(self):
+    if self.room is None:
+      return
+    
+    try:
+      for layer_index in range(4):
+        print(layer_index)
+        layer = self.room.layers_asset_list.layers[layer_index]
+        if layer is not None:
+          layer.save_any_unsaved_changes()
+    except Exception as e:
+      QMessageBox.warning(self,
+        "Error saving layer changes",
+        str(e)
+      )
+  
+  
   def load_map(self):
     self.map_graphics_scene.clear()
     
@@ -604,6 +624,8 @@ class MCEditorWindow(QMainWindow):
       )
       return
     emulator_path = self.settings["emulator_path"]
+    
+    self.save_any_unsaved_changes_for_all_layers()
     
     # Kill the last running emulator process if the user didn't do it manually.
     if self.last_emulator_process is not None:
