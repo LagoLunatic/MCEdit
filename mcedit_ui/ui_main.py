@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Mon Apr 15 12:55:13 2019
+# Created: Thu Apr 18 13:30:48 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -153,6 +153,8 @@ class Ui_MainWindow(object):
         self.actionLayer_BG3.setObjectName("actionLayer_BG3")
         self.actionSave_Editor = QtWidgets.QAction(MainWindow)
         self.actionSave_Editor.setObjectName("actionSave_Editor")
+        self.actionText_Editor = QtWidgets.QAction(MainWindow)
+        self.actionText_Editor.setObjectName("actionText_Editor")
         self.menuFile.addAction(self.actionOpen_ROM)
         self.menuView.addAction(self.actionLayer_BG1)
         self.menuView.addAction(self.actionLayer_BG2)
@@ -162,6 +164,7 @@ class Ui_MainWindow(object):
         self.menuView.addAction(self.actionExits)
         self.menuTools.addAction(self.actionEntity_Search)
         self.menuTools.addAction(self.actionSave_Editor)
+        self.menuTools.addAction(self.actionText_Editor)
         self.menuBuild.addAction(self.actionTest_Room)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -196,6 +199,8 @@ class Ui_MainWindow(object):
         self.actionLayer_BG3.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG3", None, -1))
         self.actionSave_Editor.setText(QtWidgets.QApplication.translate("MainWindow", "Save Editor", None, -1))
         self.actionSave_Editor.setShortcut(QtWidgets.QApplication.translate("MainWindow", "V", None, -1))
+        self.actionText_Editor.setText(QtWidgets.QApplication.translate("MainWindow", "Text Editor", None, -1))
+        self.actionText_Editor.setShortcut(QtWidgets.QApplication.translate("MainWindow", "T", None, -1))
 
-from mcedit_ui.room_view import RoomView
 from mcedit_ui.entity_properties import EntityProperties
+from mcedit_ui.room_view import RoomView

@@ -12,6 +12,7 @@ from mcedit_ui.tileset_graphics_scene import *
 
 from mcedit_ui.entity_search_dialog import *
 from mcedit_ui.save_editor_dialog import *
+from mcedit_ui.text_editor_dialog import *
 
 from mclib.game import Game
 from mclib.renderer import Renderer
@@ -97,6 +98,7 @@ class MCEditorWindow(QMainWindow):
     
     self.ui.actionEntity_Search.triggered.connect(self.open_entity_search)
     self.ui.actionSave_Editor.triggered.connect(self.open_save_editor)
+    self.ui.actionText_Editor.triggered.connect(self.open_text_editor)
     
     self.ui.actionTest_Room.triggered.connect(self.test_room)
     
@@ -612,6 +614,10 @@ class MCEditorWindow(QMainWindow):
   
   def open_save_editor(self):
     dialog = SaveEditorDialog(self)
+    self.open_dialogs.append(dialog)
+  
+  def open_text_editor(self):
+    dialog = TextEditorDialog(self)
     self.open_dialogs.append(dialog)
   
   

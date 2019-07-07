@@ -240,6 +240,7 @@
     </property>
     <addaction name="actionEntity_Search"/>
     <addaction name="actionSave_Editor"/>
+    <addaction name="actionText_Editor"/>
    </widget>
    <widget class="QMenu" name="menuBuild">
     <property name="title">
@@ -346,6 +347,14 @@
    </property>
    <property name="shortcut">
     <string>V</string>
+   </property>
+  </action>
+  <action name="actionText_Editor">
+   <property name="text">
+    <string>Text Editor</string>
+   </property>
+   <property name="shortcut">
+    <string>T</string>
    </property>
   </action>
  </widget>
