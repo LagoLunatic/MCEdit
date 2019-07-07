@@ -15,6 +15,7 @@ from mcedit_ui.save_editor_dialog import *
 from mcedit_ui.text_editor_dialog import *
 
 from mclib.game import Game
+from mclib.data_interface import RomInterface
 from mclib.renderer import Renderer
 from mclib.docs import AREA_INDEX_TO_NAME
 
@@ -24,6 +25,7 @@ from PIL import Image
 import traceback
 import subprocess
 import psutil
+from zipfile import ZipFile
 
 import yaml
 try:
@@ -48,6 +50,8 @@ class MCEditorWindow(QMainWindow):
     super().__init__()
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
+    
+    self.current_project_path = None
     
     self.open_dialogs = []
     
@@ -87,7 +91,10 @@ class MCEditorWindow(QMainWindow):
     QShortcut(QKeySequence(Qt.Key_F2), self, self.enter_bg2_layer_edit_mode)
     QShortcut(QKeySequence(Qt.Key_F3), self, self.enter_bg1_layer_edit_mode)
     
-    self.ui.actionOpen_ROM.triggered.connect(self.open_rom_dialog)
+    self.ui.actionNew_Project.triggered.connect(self.start_new_project)
+    self.ui.actionOpen_Project.triggered.connect(self.open_project)
+    self.ui.actionSave_Project.triggered.connect(self.save_project)
+    self.ui.actionSave_Project_As.triggered.connect(self.save_project_as)
     
     self.ui.actionLayer_BG1.triggered.connect(self.update_visible_view_items)
     self.ui.actionLayer_BG2.triggered.connect(self.update_visible_view_items)
@@ -117,10 +124,20 @@ class MCEditorWindow(QMainWindow):
     
     self.setWindowState(Qt.WindowMaximized)
     
+    self.disable_menu_actions_when_no_project_loaded()
+    
     self.show()
     
-    if "last_used_rom" in self.settings and os.path.isfile(self.settings["last_used_rom"]):
-      self.open_rom(self.settings["last_used_rom"])
+    if "last_used_project" in self.settings and os.path.isfile(self.settings["last_used_project"]):
+      try:
+        self.open_project_by_path(self.settings["last_used_project"])
+      except Exception as e:
+        stack_trace = traceback.format_exc()
+        error_message = "Error opening last used project:\n" + str(e) + "\n\n" + stack_trace
+        QMessageBox.warning(self,
+          "Error opening last used project",
+          error_message
+        )
   
   def load_settings(self):
     self.settings_path = "settings.txt"
@@ -136,24 +153,97 @@ class MCEditorWindow(QMainWindow):
     with open(self.settings_path, "w") as f:
       yaml.dump(self.settings, f, default_flow_style=False, Dumper=yaml.Dumper)
   
-  def open_rom_dialog(self):
+  MENU_ACTIONS_THAT_REQUIRE_PROJECT_TO_BE_LOADED = [
+    "actionSave_Project",
+    "actionSave_Project_As",
+    "actionSave_Editor",
+    "actionText_Editor",
+    "actionLayer_BG1",
+    "actionLayer_BG2",
+    "actionLayer_BG3",
+    "actionEntities",
+    "actionTile_Entities",
+    "actionExits",
+    "actionEntity_Search",
+    "actionTest_Room",
+  ]
+  
+  def disable_menu_actions_when_no_project_loaded(self):
+    for action_name in self.MENU_ACTIONS_THAT_REQUIRE_PROJECT_TO_BE_LOADED:
+      getattr(self.ui, action_name).setEnabled(False)
+  
+  def enable_menu_actions_when_project_loaded(self):
+    for action_name in self.MENU_ACTIONS_THAT_REQUIRE_PROJECT_TO_BE_LOADED:
+      getattr(self.ui, action_name).setEnabled(True)
+  
+  def start_new_project(self):
     default_dir = None
     
-    rom_path, selected_filter = QFileDialog.getOpenFileName(self, "Select Minish Cap ROM to open", default_dir, "GBA ROM Files (*.gba)")
+    rom_path, selected_filter = QFileDialog.getOpenFileName(self, "Select Minish Cap ROM to use as a base", default_dir, "GBA ROM Files (*.gba)")
     if not rom_path:
       return
     
-    self.open_rom(rom_path)
+    # TODO: verify that the chosen file is actually a USA minish cap rom
+    
+    # TODO: if the rom is USA minish cap, but md5 is not vanilla, give a warning (disableable in settings)
+    
+    with open(rom_path, "rb") as file:
+      rom_interface = RomInterface(file.read())
+    
+    self.load_project(rom_interface)
+    
+    self.current_project_path = None
   
-  def open_rom(self, rom_path):
+  def open_project(self):
+    default_dir = None
+    
+    project_path, selected_filter = QFileDialog.getOpenFileName(self, "Select project", default_dir, "MCEdit Project Files (*.mcproj)")
+    if not project_path:
+      return
+    
+    self.open_project_by_path(project_path)
+  
+  def open_project_by_path(self, project_path):
+    # TODO: ensure project_path is a real project
+    
+    zip = ZipFile(project_path)
+    
+    rom_interface = RomInterface(zip.read("rom.gba"))
+    
+    self.load_project(rom_interface)
+    
+    self.current_project_path = project_path
+    self.settings["last_used_project"] = self.current_project_path
+  
+  def load_project(self, rom_interface):
     self.close_open_dialogs()
     
-    self.settings["last_used_rom"] = rom_path
-    
-    self.game = Game(rom_path)
+    self.game = Game(rom_interface)
     self.renderer = Renderer(self.game)
     
     self.initialize_dropdowns()
+    
+    self.enable_menu_actions_when_project_loaded()
+  
+  def save_project(self):
+    if self.current_project_path is None:
+      self.save_project_as()
+      return
+    
+    with ZipFile(self.current_project_path, "w") as zip:
+      zip.writestr("rom.gba", self.game.rom.read_all_bytes())
+  
+  def save_project_as(self):
+    default_dir = None
+    
+    project_path, selected_filter = QFileDialog.getSaveFileName(self, "Save as", default_dir, "MCEdit Project Files (*.mcproj)")
+    if not project_path:
+      return
+    
+    self.current_project_path = project_path
+    self.settings["last_used_project"] = self.current_project_path
+    
+    self.save_project()
   
   def initialize_dropdowns(self):
     self.ui.area_index.clear()
@@ -622,6 +712,14 @@ class MCEditorWindow(QMainWindow):
   
   
   def test_room(self):
+    if self.current_project_path is None:
+      QMessageBox.warning(self,
+        "Project not saved",
+        "Cannot test run on an unsaved project. Save the project and try again."
+      )
+      # TODO: figure out where to put the test room rom when project is unsaved to fix this limitation
+      return
+    
     # TODO: add settings window to set the emulator path
     if self.settings.get("emulator_path") is None:
       QMessageBox.warning(self,
@@ -650,10 +748,9 @@ class MCEditorWindow(QMainWindow):
     test_rom.write_u16(sym+4, scene_pos.y())
     
     # Write the test ROM.
-    input_rom_path = self.settings["last_used_rom"]
-    output_dir = os.path.dirname(input_rom_path)
-    input_rom_basename, file_ext = os.path.splitext(os.path.basename(input_rom_path))
-    output_rom_basename = input_rom_basename + " Test"
+    output_dir = os.path.dirname(self.current_project_path)
+    project_basename, file_ext = os.path.splitext(os.path.basename(self.current_project_path))
+    output_rom_basename = project_basename + " Test"
     output_rom_path = os.path.join(output_dir, output_rom_basename + ".gba")
     output_rom_path = os.path.abspath(output_rom_path)
     output_rom_path = output_rom_path.replace("/", "\\")

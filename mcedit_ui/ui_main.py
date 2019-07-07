@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Thu Apr 18 13:30:48 2019
+# Created: Sun Jul  7 16:13:44 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,7 +28,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.formLayout = QtWidgets.QFormLayout()
-        self.formLayout.setContentsMargins(0, 0, 0, 0)
         self.formLayout.setObjectName("formLayout")
         self.label = QtWidgets.QLabel(self.left_sidebar)
         self.label.setObjectName("label")
@@ -60,7 +59,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 680, 693))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 684, 707))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -107,7 +106,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.splitter)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 21))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -121,8 +120,6 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.actionOpen_ROM = QtWidgets.QAction(MainWindow)
-        self.actionOpen_ROM.setObjectName("actionOpen_ROM")
         self.actionLayer_BG1 = QtWidgets.QAction(MainWindow)
         self.actionLayer_BG1.setCheckable(True)
         self.actionLayer_BG1.setChecked(True)
@@ -155,7 +152,18 @@ class Ui_MainWindow(object):
         self.actionSave_Editor.setObjectName("actionSave_Editor")
         self.actionText_Editor = QtWidgets.QAction(MainWindow)
         self.actionText_Editor.setObjectName("actionText_Editor")
-        self.menuFile.addAction(self.actionOpen_ROM)
+        self.actionNew_Project = QtWidgets.QAction(MainWindow)
+        self.actionNew_Project.setObjectName("actionNew_Project")
+        self.actionOpen_Project = QtWidgets.QAction(MainWindow)
+        self.actionOpen_Project.setObjectName("actionOpen_Project")
+        self.actionSave_Project = QtWidgets.QAction(MainWindow)
+        self.actionSave_Project.setObjectName("actionSave_Project")
+        self.actionSave_Project_As = QtWidgets.QAction(MainWindow)
+        self.actionSave_Project_As.setObjectName("actionSave_Project_As")
+        self.menuFile.addAction(self.actionNew_Project)
+        self.menuFile.addAction(self.actionOpen_Project)
+        self.menuFile.addAction(self.actionSave_Project)
+        self.menuFile.addAction(self.actionSave_Project_As)
         self.menuView.addAction(self.actionLayer_BG1)
         self.menuView.addAction(self.actionLayer_BG2)
         self.menuView.addAction(self.actionLayer_BG3)
@@ -186,7 +194,6 @@ class Ui_MainWindow(object):
         self.menuView.setTitle(QtWidgets.QApplication.translate("MainWindow", "View", None, -1))
         self.menuTools.setTitle(QtWidgets.QApplication.translate("MainWindow", "Tools", None, -1))
         self.menuBuild.setTitle(QtWidgets.QApplication.translate("MainWindow", "Build", None, -1))
-        self.actionOpen_ROM.setText(QtWidgets.QApplication.translate("MainWindow", "Open ROM", None, -1))
         self.actionLayer_BG1.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG1", None, -1))
         self.actionLayer_BG2.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG2", None, -1))
         self.actionEntities.setText(QtWidgets.QApplication.translate("MainWindow", "Entities", None, -1))
@@ -201,6 +208,10 @@ class Ui_MainWindow(object):
         self.actionSave_Editor.setShortcut(QtWidgets.QApplication.translate("MainWindow", "V", None, -1))
         self.actionText_Editor.setText(QtWidgets.QApplication.translate("MainWindow", "Text Editor", None, -1))
         self.actionText_Editor.setShortcut(QtWidgets.QApplication.translate("MainWindow", "T", None, -1))
+        self.actionNew_Project.setText(QtWidgets.QApplication.translate("MainWindow", "New Project", None, -1))
+        self.actionOpen_Project.setText(QtWidgets.QApplication.translate("MainWindow", "Open Project", None, -1))
+        self.actionSave_Project.setText(QtWidgets.QApplication.translate("MainWindow", "Save Project", None, -1))
+        self.actionSave_Project_As.setText(QtWidgets.QApplication.translate("MainWindow", "Save Project As", None, -1))
 
-from mcedit_ui.entity_properties import EntityProperties
 from mcedit_ui.room_view import RoomView
+from mcedit_ui.entity_properties import EntityProperties
