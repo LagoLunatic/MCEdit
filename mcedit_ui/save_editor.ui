@@ -137,7 +137,7 @@
         <layout class="QFormLayout" name="owned_items_layout"/>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="flags_layout"/>
+        <layout class="QGridLayout" name="flags_layout"/>
        </item>
       </layout>
      </widget>

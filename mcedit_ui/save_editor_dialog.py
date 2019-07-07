@@ -65,10 +65,40 @@ class SaveEditorDialog(QDialog):
       items_layout.setWidget(item_id, QFormLayout.FieldRole, dropdown)
     
     flags_layout = self.ui.flags_layout
-    for flag_index in range(SaveSlot.NUM_FLAGS):
-      checkbox = QCheckBox(self)
-      checkbox.setText("Flag %03X" % (flag_index))
-      flags_layout.addWidget(checkbox)
+    self.flag_checkboxes = []
+    all_local_flag_offsets = [
+      (0x0000, "Global"),
+      (0x0100, "Outdoors"),
+      (0x0200, "Indoors"),
+      (0x0300, "Caves & Passages"),
+      (0x0400, "Caves"),
+      (0x0500, "Deepwood Shrine"),
+      (0x05C0, "Cave of Flames"),
+      (0x0680, "Fortress of Winds"),
+      (0x0740, "Temple of Droplets"),
+      (0x0800, "Palace of Winds"),
+      (0x08C0, "Dark Hyrule Castle"),
+      (0x09C0, "(Unused 1)"),
+      (0x0A80, "(Unused 2)"),
+      (0x1000, ""),
+    ]
+    col = 0
+    for i in range(len(all_local_flag_offsets)-1):
+      local_flag_offset, flag_region_name = all_local_flag_offsets[i]
+      next_local_flag_offset, next_flag_region_name = all_local_flag_offsets[i+1]
+      
+      label = QLabel()
+      label.setText(flag_region_name)
+      flags_layout.addWidget(label, 0, col)
+      
+      row = 1
+      for flag_index in range(local_flag_offset, next_local_flag_offset):
+        checkbox = QCheckBox(self)
+        checkbox.setText("Flag %03X" % (flag_index))
+        flags_layout.addWidget(checkbox, row, col)
+        self.flag_checkboxes.append(checkbox)
+        row += 1
+      col += 1
   
   def update_ui_from_save(self):
     if self.save is None:
@@ -86,9 +116,8 @@ class SaveEditorDialog(QDialog):
       dropdown = items_layout.itemAt(item_id, QFormLayout.FieldRole).widget()
       dropdown.setCurrentIndex(owned_item_value)
     
-    flags_layout = self.ui.flags_layout
     for flag_index, flag_is_set in enumerate(slot.flags):
-      checkbox = flags_layout.itemAt(flag_index).widget()
+      checkbox = self.flag_checkboxes[flag_index]
       checkbox.setChecked(flag_is_set)
   
   def update_save_from_ui(self):
@@ -107,9 +136,8 @@ class SaveEditorDialog(QDialog):
       dropdown = items_layout.itemAt(item_id, QFormLayout.FieldRole).widget()
       slot.owned_item_info[item_id] = dropdown.currentIndex()
     
-    flags_layout = self.ui.flags_layout
     for flag_index, flag_is_set in enumerate(slot.flags):
-      checkbox = flags_layout.itemAt(flag_index).widget()
+      checkbox = self.flag_checkboxes[flag_index]
       slot.flags[flag_index] = checkbox.isChecked()
   
   

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'save_editor.ui',
 # licensing of 'save_editor.ui' applies.
 #
-# Created: Mon Apr 15 12:55:13 2019
+# Created: Thu Apr 18 13:30:48 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -65,7 +65,7 @@ class Ui_SaveEditor(object):
         self.owned_items_layout = QtWidgets.QFormLayout()
         self.owned_items_layout.setObjectName("owned_items_layout")
         self.horizontalLayout_3.addLayout(self.owned_items_layout)
-        self.flags_layout = QtWidgets.QVBoxLayout()
+        self.flags_layout = QtWidgets.QGridLayout()
         self.flags_layout.setObjectName("flags_layout")
         self.horizontalLayout_3.addLayout(self.flags_layout)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
