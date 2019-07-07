@@ -230,6 +230,8 @@ class MCEditorWindow(QMainWindow):
       self.save_project_as()
       return
     
+    self.save_any_unsaved_changes_for_all_layers()
+    
     with ZipFile(self.current_project_path, "w") as zip:
       zip.writestr("rom.gba", self.game.rom.read_all_bytes())
   
