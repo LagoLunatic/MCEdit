@@ -117,7 +117,7 @@ class EntityImageItem(GraphicsImageItem, GenericEntityGraphicsItem):
   
   def update_from_entity(self):
     try:
-      image, x_off, y_off = self.renderer.render_entity_pretty_sprite(self.entity)
+      image, x_off, y_off = self.renderer.render_entity_pretty_frame(self.entity)
     except Exception as e:
       stack_trace = traceback.format_exc()
       error_message = "Error rendering entity sprite in room %02X-%02X:\n" % (
