@@ -51,10 +51,10 @@ class GenericEntityGraphicsItem(QGraphicsItem):
     return super().itemChange(change, value)
 
 class GraphicsImageItem(QGraphicsPixmapItem):
-  def __init__(self, pil_image=None):
+  def __init__(self, pil_image=None, x_off=0, y_off=0):
     super().__init__()
     
-    self.set_image(pil_image)
+    self.set_image(pil_image, x_off, y_off)
   
   def set_image(self, pil_image, x_off=0, y_off=0):
     if pil_image is None:
