@@ -20,6 +20,8 @@ from mclib.data_interface import RomInterface
 from mclib.renderer import Renderer
 from mclib.docs import AREA_INDEX_TO_NAME
 
+from version import VERSION
+
 import os
 from collections import OrderedDict
 from PIL import Image
@@ -117,7 +119,7 @@ class MCEditorWindow(QMainWindow):
     self.ui.entity_lists_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
     self.ui.entity_lists_list.itemSelectionChanged.connect(self.entity_list_visibility_toggled)
     
-    #self.setWindowTitle("Minish Cap Editor %s" % VERSION)
+    self.setWindowTitle("MCEdit %s" % VERSION)
     
     #icon_path = os.path.join(ASSETS_PATH, "icon.ico")
     #self.setWindowIcon(QIcon(icon_path))
