@@ -1,8 +1,8 @@
 
 ### About
 
-MCEdit is an editor for The Legend of Zelda: The Minish Cap (US version only).
-It's currently a work in progress and has a number of bugs and half-finished features.
+MCEdit is an editor for The Legend of Zelda: The Minish Cap (US version only).  
+It's currently a work in progress and has a number of bugs and half-finished features.  
 
 Current features:
 * Viewing rooms as well as the entities within them
