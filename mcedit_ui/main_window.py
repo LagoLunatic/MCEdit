@@ -13,6 +13,7 @@ from mcedit_ui.tileset_graphics_scene import *
 from mcedit_ui.entity_search_dialog import *
 from mcedit_ui.save_editor_dialog import *
 from mcedit_ui.text_editor_dialog import *
+from mcedit_ui.sprite_editor_dialog import *
 
 from mclib.game import Game
 from mclib.data_interface import RomInterface
@@ -106,6 +107,7 @@ class MCEditorWindow(QMainWindow):
     self.ui.actionEntity_Search.triggered.connect(self.open_entity_search)
     self.ui.actionSave_Editor.triggered.connect(self.open_save_editor)
     self.ui.actionText_Editor.triggered.connect(self.open_text_editor)
+    self.ui.actionSprite_Editor.triggered.connect(self.open_sprite_editor)
     
     self.ui.actionTest_Room.triggered.connect(self.test_room)
     
@@ -158,6 +160,7 @@ class MCEditorWindow(QMainWindow):
     "actionSave_Project_As",
     "actionSave_Editor",
     "actionText_Editor",
+    "actionSprite_Editor",
     "actionLayer_BG1",
     "actionLayer_BG2",
     "actionLayer_BG3",
@@ -710,6 +713,10 @@ class MCEditorWindow(QMainWindow):
   
   def open_text_editor(self):
     dialog = TextEditorDialog(self)
+    self.open_dialogs.append(dialog)
+  
+  def open_sprite_editor(self):
+    dialog = SpriteEditorDialog(self)
     self.open_dialogs.append(dialog)
   
   

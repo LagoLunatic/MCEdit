@@ -64,7 +64,7 @@ class EntitySearchDialog(QDialog):
               "In room %02X-%02X:  Entity %02X-%02X-%02X  %s" % (
                 room.area.area_index, room.room_index,
                 entity.type, entity.subtype, entity.form,
-                Docs.get_name_for_entity(entity)
+                Docs.get_name_for_entity("entity", entity.type, entity.subtype, entity.form)
               ))
   
   def selected_entity_changed(self):

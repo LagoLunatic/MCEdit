@@ -199,6 +199,7 @@
     <addaction name="actionEntity_Search"/>
     <addaction name="actionSave_Editor"/>
     <addaction name="actionText_Editor"/>
+    <addaction name="actionSprite_Editor"/>
    </widget>
    <widget class="QMenu" name="menuBuild">
     <property name="title">
@@ -328,6 +329,14 @@
   <action name="actionSave_Project_As">
    <property name="text">
     <string>Save Project As</string>
+   </property>
+  </action>
+  <action name="actionSprite_Editor">
+   <property name="text">
+    <string>Sprite Editor</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
    </property>
   </action>
  </widget>

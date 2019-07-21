@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Sun Jul  7 16:13:44 2019
+# Created: Mon Jul  8 15:08:26 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -160,6 +160,8 @@ class Ui_MainWindow(object):
         self.actionSave_Project.setObjectName("actionSave_Project")
         self.actionSave_Project_As = QtWidgets.QAction(MainWindow)
         self.actionSave_Project_As.setObjectName("actionSave_Project_As")
+        self.actionSprite_Editor = QtWidgets.QAction(MainWindow)
+        self.actionSprite_Editor.setObjectName("actionSprite_Editor")
         self.menuFile.addAction(self.actionNew_Project)
         self.menuFile.addAction(self.actionOpen_Project)
         self.menuFile.addAction(self.actionSave_Project)
@@ -173,6 +175,7 @@ class Ui_MainWindow(object):
         self.menuTools.addAction(self.actionEntity_Search)
         self.menuTools.addAction(self.actionSave_Editor)
         self.menuTools.addAction(self.actionText_Editor)
+        self.menuTools.addAction(self.actionSprite_Editor)
         self.menuBuild.addAction(self.actionTest_Room)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -212,6 +215,8 @@ class Ui_MainWindow(object):
         self.actionOpen_Project.setText(QtWidgets.QApplication.translate("MainWindow", "Open Project", None, -1))
         self.actionSave_Project.setText(QtWidgets.QApplication.translate("MainWindow", "Save Project", None, -1))
         self.actionSave_Project_As.setText(QtWidgets.QApplication.translate("MainWindow", "Save Project As", None, -1))
+        self.actionSprite_Editor.setText(QtWidgets.QApplication.translate("MainWindow", "Sprite Editor", None, -1))
+        self.actionSprite_Editor.setShortcut(QtWidgets.QApplication.translate("MainWindow", "P", None, -1))
 
-from mcedit_ui.room_view import RoomView
 from mcedit_ui.entity_properties import EntityProperties
+from mcedit_ui.room_view import RoomView
