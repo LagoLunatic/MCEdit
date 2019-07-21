@@ -51,8 +51,10 @@ class GenericEntityGraphicsItem(QGraphicsItem):
     return super().itemChange(change, value)
 
 class GraphicsImageItem(QGraphicsPixmapItem):
-  def __init__(self, pil_image=None, x_off=0, y_off=0):
+  def __init__(self, pil_image=None, x_off=0, y_off=0, draw_border=True):
     super().__init__()
+    
+    self.draw_border = draw_border
     
     self.set_image(pil_image, x_off, y_off)
   
@@ -101,10 +103,11 @@ class GraphicsImageItem(QGraphicsPixmapItem):
     return path
   
   def paint(self, painter, option, widget):
-    # Draw a border around the sprite.
-    pen = painter.pen()
-    rect = self.boundingRect()
-    painter.drawRect(QRect(rect.x(), rect.y(), rect.width()-pen.width(), rect.height()-pen.width()))
+    if self.draw_border:
+      # Draw a border around the sprite.
+      pen = painter.pen()
+      rect = self.boundingRect()
+      painter.drawRect(QRect(rect.x(), rect.y(), rect.width()-pen.width(), rect.height()-pen.width()))
     
     super().paint(painter, option, widget)
 
