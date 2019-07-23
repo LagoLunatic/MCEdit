@@ -740,6 +740,9 @@ class MCEditorWindow(QMainWindow):
       return
     emulator_path = self.settings["emulator_path"]
     
+    if self.settings.get("test_room_save_slot_index", None) not in [0, 1, 2]:
+      self.settings["test_room_save_slot_index"] = 0
+    
     self.save_any_unsaved_changes_for_all_layers()
     
     # Kill the last running emulator process if the user didn't do it manually.
@@ -753,10 +756,11 @@ class MCEditorWindow(QMainWindow):
     test_rom = self.game.rom.copy()
     self.game.apply_patch("test_room", rom=test_rom)
     sym = self.game.custom_symbols["test_room_data"]
-    test_rom.write_u8(sym, self.area_index)
-    test_rom.write_u8(sym+1, self.room_index)
-    test_rom.write_u16(sym+2, scene_pos.x())
-    test_rom.write_u16(sym+4, scene_pos.y())
+    test_rom.write_u8(sym+0, self.settings["test_room_save_slot_index"])
+    test_rom.write_u8(sym+1, self.area_index)
+    test_rom.write_u8(sym+2, self.room_index)
+    test_rom.write_u16(sym+4, scene_pos.x())
+    test_rom.write_u16(sym+6, scene_pos.y())
     
     # Write the test ROM.
     output_dir = os.path.dirname(self.current_project_path)
