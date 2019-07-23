@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'main.ui',
 # licensing of 'main.ui' applies.
 #
-# Created: Mon Jul  8 15:08:26 2019
+# Created: Tue Jul 23 15:24:24 2019
 #      by: pyside2-uic  running on PySide2 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -116,6 +116,8 @@ class Ui_MainWindow(object):
         self.menuTools.setObjectName("menuTools")
         self.menuBuild = QtWidgets.QMenu(self.menubar)
         self.menuBuild.setObjectName("menuBuild")
+        self.menuEdit = QtWidgets.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -162,6 +164,8 @@ class Ui_MainWindow(object):
         self.actionSave_Project_As.setObjectName("actionSave_Project_As")
         self.actionSprite_Editor = QtWidgets.QAction(MainWindow)
         self.actionSprite_Editor.setObjectName("actionSprite_Editor")
+        self.actionPreferences = QtWidgets.QAction(MainWindow)
+        self.actionPreferences.setObjectName("actionPreferences")
         self.menuFile.addAction(self.actionNew_Project)
         self.menuFile.addAction(self.actionOpen_Project)
         self.menuFile.addAction(self.actionSave_Project)
@@ -177,7 +181,9 @@ class Ui_MainWindow(object):
         self.menuTools.addAction(self.actionText_Editor)
         self.menuTools.addAction(self.actionSprite_Editor)
         self.menuBuild.addAction(self.actionTest_Room)
+        self.menuEdit.addAction(self.actionPreferences)
         self.menubar.addAction(self.menuFile.menuAction())
+        self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuTools.menuAction())
         self.menubar.addAction(self.menuBuild.menuAction())
@@ -197,6 +203,7 @@ class Ui_MainWindow(object):
         self.menuView.setTitle(QtWidgets.QApplication.translate("MainWindow", "View", None, -1))
         self.menuTools.setTitle(QtWidgets.QApplication.translate("MainWindow", "Tools", None, -1))
         self.menuBuild.setTitle(QtWidgets.QApplication.translate("MainWindow", "Build", None, -1))
+        self.menuEdit.setTitle(QtWidgets.QApplication.translate("MainWindow", "Edit", None, -1))
         self.actionLayer_BG1.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG1", None, -1))
         self.actionLayer_BG2.setText(QtWidgets.QApplication.translate("MainWindow", "Layer BG2", None, -1))
         self.actionEntities.setText(QtWidgets.QApplication.translate("MainWindow", "Entities", None, -1))
@@ -217,6 +224,7 @@ class Ui_MainWindow(object):
         self.actionSave_Project_As.setText(QtWidgets.QApplication.translate("MainWindow", "Save Project As", None, -1))
         self.actionSprite_Editor.setText(QtWidgets.QApplication.translate("MainWindow", "Sprite Editor", None, -1))
         self.actionSprite_Editor.setShortcut(QtWidgets.QApplication.translate("MainWindow", "P", None, -1))
+        self.actionPreferences.setText(QtWidgets.QApplication.translate("MainWindow", "Preferences", None, -1))
 
 from mcedit_ui.entity_properties import EntityProperties
 from mcedit_ui.room_view import RoomView

@@ -10,6 +10,7 @@ from mcedit_ui.entity_layer_item import *
 from mcedit_ui.layer_item import *
 from mcedit_ui.tileset_graphics_scene import *
 
+from mcedit_ui.settings import *
 from mcedit_ui.entity_search_dialog import *
 from mcedit_ui.save_editor_dialog import *
 from mcedit_ui.text_editor_dialog import *
@@ -106,6 +107,7 @@ class MCEditorWindow(QMainWindow):
     self.ui.actionTile_Entities.triggered.connect(self.update_visible_view_items)
     self.ui.actionExits.triggered.connect(self.update_visible_view_items)
     
+    self.ui.actionPreferences.triggered.connect(self.open_settings)
     self.ui.actionEntity_Search.triggered.connect(self.open_entity_search)
     self.ui.actionSave_Editor.triggered.connect(self.open_save_editor)
     self.ui.actionText_Editor.triggered.connect(self.open_text_editor)
@@ -705,6 +707,10 @@ class MCEditorWindow(QMainWindow):
       dialog.close()
     self.open_dialogs = []
   
+  def open_settings(self):
+    dialog = SettingsDialog(self)
+    self.open_dialogs.append(dialog)
+  
   def open_entity_search(self):
     entity_search_dialog = EntitySearchDialog(self)
     self.open_dialogs.append(entity_search_dialog)
@@ -731,7 +737,6 @@ class MCEditorWindow(QMainWindow):
       # TODO: figure out where to put the test room rom when project is unsaved to fix this limitation
       return
     
-    # TODO: add settings window to set the emulator path
     if self.settings.get("emulator_path") is None:
       QMessageBox.warning(self,
         "Emulator path not set",
