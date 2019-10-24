@@ -21,6 +21,8 @@ Planned features:
 * Changing the size of rooms
 * Adding and removing entities
 * Implement editing more variables in save files
+* Editing maps
+* Editing image data
 
 ### Running from source
 
