@@ -1,53 +1,79 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'settings.ui',
-# licensing of 'settings.ui' applies.
-#
-# Created: Tue Jul 23 15:29:50 2019
-#      by: pyside2-uic  running on PySide2 5.11.2
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'settings.ui'
+##
+## Created by: Qt User Interface Compiler version 5.14.1
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
+    QRect, QSize, QUrl, Qt)
+from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
+    QFontDatabase, QIcon, QLinearGradient, QPalette, QPainter, QPixmap,
+    QRadialGradient)
+from PySide2.QtWidgets import *
+
 
 class Ui_Settings(object):
     def setupUi(self, Settings):
-        Settings.setObjectName("Settings")
+        if Settings.objectName():
+            Settings.setObjectName(u"Settings")
         Settings.resize(600, 200)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Settings)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
-        self.label = QtWidgets.QLabel(Settings)
-        self.label.setObjectName("label")
+        self.verticalLayout = QVBoxLayout(Settings)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.label = QLabel(Settings)
+        self.label.setObjectName(u"label")
+
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
-        self.emulator_path = QtWidgets.QLineEdit(Settings)
-        self.emulator_path.setObjectName("emulator_path")
+
+        self.emulator_path = QLineEdit(Settings)
+        self.emulator_path.setObjectName(u"emulator_path")
+
         self.gridLayout.addWidget(self.emulator_path, 0, 1, 1, 1)
-        self.emulator_path_browse_button = QtWidgets.QPushButton(Settings)
-        self.emulator_path_browse_button.setObjectName("emulator_path_browse_button")
+
+        self.emulator_path_browse_button = QPushButton(Settings)
+        self.emulator_path_browse_button.setObjectName(u"emulator_path_browse_button")
+
         self.gridLayout.addWidget(self.emulator_path_browse_button, 0, 2, 1, 1)
-        self.label_2 = QtWidgets.QLabel(Settings)
-        self.label_2.setObjectName("label_2")
+
+        self.label_2 = QLabel(Settings)
+        self.label_2.setObjectName(u"label_2")
+
         self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
-        self.test_room_save_slot = QtWidgets.QComboBox(Settings)
-        self.test_room_save_slot.setMaximumSize(QtCore.QSize(80, 16777215))
-        self.test_room_save_slot.setObjectName("test_room_save_slot")
+
+        self.test_room_save_slot = QComboBox(Settings)
+        self.test_room_save_slot.setObjectName(u"test_room_save_slot")
+        self.test_room_save_slot.setMaximumSize(QSize(80, 16777215))
+
         self.gridLayout.addWidget(self.test_room_save_slot, 1, 1, 1, 1)
+
+
         self.verticalLayout.addLayout(self.gridLayout)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem)
-        self.buttonBox = QtWidgets.QDialogButtonBox(Settings)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout.addItem(self.verticalSpacer)
+
+        self.buttonBox = QDialogButtonBox(Settings)
+        self.buttonBox.setObjectName(u"buttonBox")
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+
         self.verticalLayout.addWidget(self.buttonBox)
 
+
         self.retranslateUi(Settings)
-        QtCore.QMetaObject.connectSlotsByName(Settings)
+
+        QMetaObject.connectSlotsByName(Settings)
+    # setupUi
 
     def retranslateUi(self, Settings):
-        Settings.setWindowTitle(QtWidgets.QApplication.translate("Settings", "Entity Search", None, -1))
-        self.label.setText(QtWidgets.QApplication.translate("Settings", "Test Room Emulator Path", None, -1))
-        self.emulator_path_browse_button.setText(QtWidgets.QApplication.translate("Settings", "Browse", None, -1))
-        self.label_2.setText(QtWidgets.QApplication.translate("Settings", "Test Room Save Slot", None, -1))
+        Settings.setWindowTitle(QCoreApplication.translate("Settings", u"Entity Search", None))
+        self.label.setText(QCoreApplication.translate("Settings", u"Test Room Emulator Path", None))
+        self.emulator_path_browse_button.setText(QCoreApplication.translate("Settings", u"Browse", None))
+        self.label_2.setText(QCoreApplication.translate("Settings", u"Test Room Save Slot", None))
+    # retranslateUi
 

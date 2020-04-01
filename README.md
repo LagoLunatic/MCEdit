@@ -32,11 +32,11 @@ Download and install git from here: https://git-scm.com/downloads
 Then clone this repository with git by running this in a command prompt:  
 `git clone --recursive https://github.com/LagoLunatic/MCEdit.git`  
 
-Download and install Python 3.6.6 from here: https://www.python.org/downloads/release/python-366/  
+Download and install Python 3.8.2 from here: https://www.python.org/downloads/release/python-382/  
 "Windows x86-64 executable installer" is the one you want if you're on Windows.  
 
 Open the MCEdit folder in a command prompt and install dependencies by running:  
-`py -3.6 -m pip install -r requirements.txt`  
+`py -3.8 -m pip install -r requirements.txt`  
 
 Then launch the editor with:  
-`py -3.6 mcedit.py`  
+`py -3.8 mcedit.py`  
