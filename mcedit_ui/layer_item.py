@@ -193,12 +193,15 @@ class LayerItem(QGraphicsRectItem):
         tile_attrs &= (~0x0C00)
         
         if tile_attrs in cached_8x8_tile_images_by_tile_attrs:
-          tile_image_8x8 = cached_8x8_tile_images_by_tile_attrs[tile_attrs]
+          data = cached_8x8_tile_images_by_tile_attrs[tile_attrs]
         else:
           pil_image = self.renderer.render_tile_by_tile_attrs(tile_attrs, gfx_data, palettes)
           data = pil_image.tobytes('raw', 'BGRA')
-          tile_image_8x8 = QImage(data, pil_image.size[0], pil_image.size[1], QImage.Format_ARGB32)
-          cached_8x8_tile_images_by_tile_attrs[tile_attrs] = tile_image_8x8
+          cached_8x8_tile_images_by_tile_attrs[tile_attrs] = data
+        
+        # For some reason, QImages can't be cached safely, they would become corrupted looking.
+        # So cache just the image data instead.
+        tile_image_8x8 = QImage(data, 8, 8, QImage.Format_ARGB32)
         
         if horizontal_flip and vertical_flip:
           tile_image_8x8 = tile_image_8x8.transformed(QTransform.fromScale(-1, -1))
