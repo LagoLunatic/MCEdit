@@ -475,6 +475,9 @@ class MCEditorWindow(QMainWindow):
   
   
   def update_edit_mode_by_current_tab(self):
+    if self.room is None:
+      return
+    
     if self.ui.right_sidebar.currentIndex() == 0:
       self.enter_entity_edit_mode()
     elif self.ui.right_sidebar.currentIndex() == 1:
