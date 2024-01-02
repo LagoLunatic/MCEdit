@@ -1,9 +1,9 @@
 
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
-from mcedit_ui.ui_entity_search import Ui_EntitySearch
+from mcedit_ui.uic.ui_entity_search import Ui_EntitySearch
 
 from mclib.docs import Docs
 

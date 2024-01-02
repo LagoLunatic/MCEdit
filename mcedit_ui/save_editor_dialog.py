@@ -1,11 +1,11 @@
 
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
 import traceback
 
-from mcedit_ui.ui_save_editor import Ui_SaveEditor
+from mcedit_ui.uic.ui_save_editor import Ui_SaveEditor
 
 from mclib.data_interface import DataInterface
 from mclib.save import Save, SaveSlot

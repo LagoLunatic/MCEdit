@@ -1,11 +1,11 @@
 
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
 import traceback
 
-from mcedit_ui.ui_sprite_editor import Ui_SpriteEditor
+from mcedit_ui.uic.ui_sprite_editor import Ui_SpriteEditor
 
 from mcedit_ui.clickable_graphics_scene import *
 from mcedit_ui.custom_graphics_items import *

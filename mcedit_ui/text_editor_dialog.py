@@ -1,9 +1,9 @@
 
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
-from mcedit_ui.ui_text_editor import Ui_TextEditor
+from mcedit_ui.uic.ui_text_editor import Ui_TextEditor
 
 from mclib.message import Message, MessageGroup
 

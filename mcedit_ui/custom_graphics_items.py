@@ -1,15 +1,16 @@
 
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
 import traceback
 
-class GenericEntityGraphicsItem(QGraphicsItem):
-  def __init__(self, entity, entity_class):
-    self.entity = entity
-    self.entity_class = entity_class
-    
+class GenericEntityGraphicsItem(QGraphicsItem): # Mixin
+  def __init__(self, *args, **kwargs):
+    # Need to avoid calling QGraphicsItem.__init__ here so we don't get a double initialization
+    pass
+  
+  def initialize_entity_item(self):
     self.setFlag(QGraphicsItem.ItemIsMovable)
     self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
     self.setFlag(QGraphicsItem.ItemIsSelectable)
@@ -19,6 +20,9 @@ class GenericEntityGraphicsItem(QGraphicsItem):
     self.update_from_entity()
     
     self.setZValue(self.pos().y())
+  
+  def update_from_entity(self):
+    raise NotImplementedError()
   
   def itemChange(self, change, value):
     if change == QGraphicsItem.ItemPositionChange and self.scene():
@@ -113,10 +117,11 @@ class GraphicsImageItem(QGraphicsPixmapItem):
 
 class EntityImageItem(GraphicsImageItem, GenericEntityGraphicsItem):
   def __init__(self, entity, entity_class, renderer):
+    super().__init__()
+    self.entity = entity
+    self.entity_class = entity_class
     self.renderer = renderer
-    
-    GraphicsImageItem.__init__(self)
-    GenericEntityGraphicsItem.__init__(self, entity, entity_class)
+    self.initialize_entity_item()
   
   def update_from_entity(self):
     try:
@@ -147,8 +152,10 @@ class EntityRectItem(QGraphicsRectItem, GenericEntityGraphicsItem):
   ENEMY_BRUSH = QBrush(QColor(200, 0, 0, 150))
   
   def __init__(self, entity, entity_class):
-    QGraphicsRectItem.__init__(self, -8, -8, 16, 16)
-    GenericEntityGraphicsItem.__init__(self, entity, entity_class)
+    super().__init__(-8, -8, 16, 16)
+    self.entity = entity
+    self.entity_class = entity_class
+    self.initialize_entity_item()
   
   def update_from_entity(self):
     if self.entity_class == "entity":

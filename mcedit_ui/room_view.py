@@ -1,7 +1,7 @@
 
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
 class RoomView(QGraphicsView):
   ZOOM_SCALES = [
@@ -100,9 +100,6 @@ class RoomView(QGraphicsView):
     if not QApplication.keyboardModifiers() & Qt.ControlModifier:
       super().wheelEvent(event)
       return
-    
-    orig_view_pos = event.pos()
-    orig_scene_pos = self.mapToScene(orig_view_pos)
     
     y_change = event.angleDelta().y()
     

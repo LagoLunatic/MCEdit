@@ -1,9 +1,9 @@
 
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
-from mcedit_ui.ui_main import Ui_MainWindow
+from mcedit_ui.uic.ui_main import Ui_MainWindow
 from mcedit_ui.clickable_graphics_scene import *
 from mcedit_ui.custom_graphics_items import *
 from mcedit_ui.entity_layer_item import *
@@ -364,6 +364,10 @@ class MCEditorWindow(QMainWindow):
       stack_trace = traceback.format_exc()
       error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
       print(error_message)
+      # QMessageBox.warning(self,
+      #   "Error loading room",
+      #   error_message
+      # )
     
     if self.room is None:
       return
@@ -374,6 +378,11 @@ class MCEditorWindow(QMainWindow):
       stack_trace = traceback.format_exc()
       error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
       print(error_message)
+      # QMessageBox.warning(self,
+      #   "Error loading room",
+      #   error_message
+      # )
+    
     
     try:
       self.load_room_entities()
@@ -381,6 +390,11 @@ class MCEditorWindow(QMainWindow):
       stack_trace = traceback.format_exc()
       error_message = "Error loading room:\n" + str(e) + "\n\n" + stack_trace
       print(error_message)
+      # QMessageBox.warning(self,
+      #   "Error loading room",
+      #   error_message
+      # )
+    
     
     self.ui.room_graphics_view.updateSceneRect(self.room_graphics_scene.itemsBoundingRect())
     

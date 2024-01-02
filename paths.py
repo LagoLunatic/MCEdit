@@ -2,7 +2,7 @@
 import os
 
 try:
-  from sys import _MEIPASS
+  from sys import _MEIPASS # @IgnoreException
   ROOT_PATH = _MEIPASS
 except ImportError:
   ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
